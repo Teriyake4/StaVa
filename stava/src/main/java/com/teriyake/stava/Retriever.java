@@ -24,7 +24,7 @@ public class Retriever {
     private File storePath; // C:/ProgramData/StaVa
     private boolean toStore;
     /**
-     * Constructs a new {@code Retriever} object without filepath to store 
+     * Constructs a new Retriever object without filepath to store 
      * data and to not automatically store retrieved data. 
      * @throws PlaywrightException if connection is unsuccessful. 
      */
@@ -33,7 +33,7 @@ public class Retriever {
         connect = new ConnectPage();
     }
     /**
-     * Constructs a new {@code Retriever} object without filepath to store 
+     * Constructs a new Retriever object without filepath to store 
      * data and storing data set to false; 
      * @param path The path of where to store retrieved data. 
      * @param store Whether to store retrieved data. 
@@ -102,8 +102,8 @@ public class Retriever {
         }
     }
     /**
-     * Stores retrieved data of player sub classes extending {@code PlayerBase}. 
-     * @param <T> The player sub classes extending {@code PlayerBase}. 
+     * Stores retrieved data of player sub classes extending PlayerBase. 
+     * @param <T> The player sub classes extending PlayerBase. 
      * @param player The data to store. 
      */
     public <T extends PlayerBase> void store(T player) {
@@ -113,7 +113,7 @@ public class Retriever {
         storePlayerData(info, toWrite);
     }
     /**
-     * Stores retrieved data of {@code Player}. 
+     * Stores retrieved data of Player. 
      * @param player The data to store. 
      */
     public void store(Player player) {
@@ -124,7 +124,7 @@ public class Retriever {
     }
     /**
      * Closes connection. Best to call this method after use of this 
-     * {@code Retriever} instance is finished. 
+     * Retriever instance is finished. 
      */
     public void closeConnection() {
         connect.close();

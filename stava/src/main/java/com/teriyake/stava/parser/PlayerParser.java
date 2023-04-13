@@ -319,11 +319,11 @@ public class PlayerParser {
 
     /**
      * Mode also known as season
-     * Parses the given json string to get specified stat as a {@code PlayerMode} object
+     * Parses the given json string to get specified stat as a PlayerMode object
      * @param jsonString playerdata to get stats from
      * @param mode stats to get from selected mode such as "competitive", or 
      * "deathmatch"
-     * @return {@code PlayerMode} Object with stats of the specified gamemode
+     * @return PlayerMode Object with stats of the specified gamemode
      */
     public static PlayerMode getPlayerMode(String jsonString, String mode) {
         JsonObject jsonPlayer = preParse(jsonString);
@@ -335,11 +335,11 @@ public class PlayerParser {
     }
 
     /**
-     * Parses the given json string to get specified stat as a {@code PlayerMap} object
+     * Parses the given json string to get specified stat as a PlayerMap object
      * @param jsonString playerdata to get stats from
      * @param mode stats to get from selected mode such as "lotus", or 
      * "icebox"
-     * @return {@code PlayerMap} Object with stats of the specified map
+     * @return PlayerMap Object with stats of the specified map
      */
     public static PlayerMap getPlayerMap(String jsonString, String map) {
         JsonObject jsonPlayer = preParse(jsonString);
@@ -351,11 +351,11 @@ public class PlayerParser {
     }
 
     /**
-     * Parses the given json string to get specified stat as a {@code PlayerAgent} object
+     * Parses the given json string to get specified stat as a PlayerAgent object
      * @param jsonString playerdata to get stats from
      * @param mode stats to get from selected mode such as "viper", or 
      * "brimstone"
-     * @return {@code PlayerAgent} Object with stats of the specified agent
+     * @return PlayerAgent Object with stats of the specified agent
      */
     public static PlayerAgent getPlayerAgent(String jsonString, String agent) {
         JsonObject jsonPlayer = preParse(jsonString);
@@ -367,11 +367,11 @@ public class PlayerParser {
     }
 
      /**
-     * Parses the given json string to get specified stat as a {@code PlayerWeapon} object
+     * Parses the given json string to get specified stat as a PlayerWeapon object
      * @param jsonString playerdata to get stats from
      * @param mode stats to get from selected mode such as "phantom", or 
      * "classic"
-     * @return {@code PlayerWeapon} Object with stats of the specified weapon
+     * @return PlayerWeapon Object with stats of the specified weapon
      */
     public static PlayerWeapon getPlayerWeapon(String jsonString, String weapon) {
         JsonObject jsonPlayer = preParse(jsonString);

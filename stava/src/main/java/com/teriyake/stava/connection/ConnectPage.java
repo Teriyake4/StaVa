@@ -10,7 +10,7 @@ import com.microsoft.playwright.Response;
 import com.teriyake.stava.HttpStatusException;
 
 /**
- * {@code ConnectPage} class connects to the Valroant Tracker.gg API
+ * ConnectPage class connects to the Valorant Tracker.gg API
  * to retrieve player data and matches while handaling HTTP
  * status exceptions. 
  */
@@ -20,7 +20,7 @@ public class ConnectPage {
     BrowserContext browser;
     Page page;
     /**
-     * Creates a new {@code ConnectPage} instance that can 
+     * Creates a new ConnectPage instance that can 
      * be used to retrieve player data and matches from the 
      * Valorant Tracker.gg API. 
      * @throws PlaywrightException
@@ -83,7 +83,7 @@ public class ConnectPage {
     /**
      * This method closes the connection to free up resources.
      * This method should be called when finished using the 
-     * {@code ConnectPage} instance. 
+     * ConnectPage instance. 
      */
     public void close() {
         page.close();

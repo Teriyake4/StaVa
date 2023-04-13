@@ -20,12 +20,12 @@ public class Player {
     private ArrayList<PlayerWeapon> weaponStats;
 
     /**
-     * Constructs a new {@code Player} object with the given statistics and metadata.
-     * @param mode An {@code ArrayList} of {@code PlayerMode} objects representing the player's statistics for different game modes.
-     * @param map An {@code ArrayList} of {@code PlayerMap} objects representing the player's statistics for different game maps.
-     * @param agent An {@code ArrayList} of {@code PlayerAgent} objects representing the player's statistics for different game agents.
-     * @param weapon An {@code ArrayList} of {@code PlayerWeapon} objects representing the player's statistics for different game weapons.
-     * @param metadata A {@code Metadata} object representing the player's metadata.
+     * Constructs a new Player object with the given statistics and metadata.
+     * @param mode An ArrayList of PlayerMode objects representing the player's statistics for different game modes.
+     * @param map An ArrayList of PlayerMap objects representing the player's statistics for different game maps.
+     * @param agent An ArrayList of PlayerAgent objects representing the player's statistics for different game agents.
+     * @param weapon An ArrayList of PlayerWeapon objects representing the player's statistics for different game weapons.
+     * @param metadata A Metadata object representing the player's metadata.
      */
     public Player(ArrayList<PlayerMode> mode, ArrayList<PlayerMap> map, 
         ArrayList<PlayerAgent> agent, ArrayList<PlayerWeapon> weapon, Metadata metadata) {
@@ -37,8 +37,8 @@ public class Player {
     }
 
     /**
-     * Returns the {@code Metadata} object containing basic player information
-     * @return The {@code Metadata} object representing the player's metadata.
+     * Returns the Metadata object containing basic player information
+     * @return The Metadata object representing the player's metadata.
      */
     public Metadata info() {
         return info;
