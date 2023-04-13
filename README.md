@@ -1,6 +1,5 @@
 ## StaVa: Stats for Valorant API
 
-do version numbers start at 0???
 
 Stava is a Java library for retrieving stats and information about players in Valorant. This is a personal project so support and development may be slow. Stava uses the Valorant Tracker API to retrieve all the information. 
 
@@ -15,14 +14,18 @@ Getting the Player object and getting stats from it using the retriever. The nam
 
 ```java
 String name = "example#tag";
+// replace with a real player. 
+// make sure player profile is public on 
+// Tracker.gg and with this code specifically, 
+// should have one comp game
 
 Retriever ret = null;
 Player p = null;
 try {
     System.out.println("Creating connection");
-    ret = new Retriever();
+    ret = new Retriever(); // This can throw an error, but unlikely
     System.out.println("Connected");
-    p = ret.getPlayer(name);
+    p = ret.getPlayer(name); // More likely to throw an error
     ret.closeConnection();
 }
 catch(Exception e) {
