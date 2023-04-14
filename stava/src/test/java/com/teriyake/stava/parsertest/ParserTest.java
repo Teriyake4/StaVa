@@ -15,7 +15,8 @@ public class ParserTest {
     public static void main(String[] args) {
         System.out.println("Getting Player Data...");
         String file = "";
-        File filePath = new File(System.getProperty("user.dir") + "/src/test/java/com/teriyake/stava/parsertest/Profile.json");
+        File filePath = new File(System.getProperty("user.dir") + "/stava/src/test/java/com/teriyake/stava/parsertest/Profile.json");
+        System.out.println(filePath);
         file = StavaUtil.readFile(filePath);
 
         if(file.equals("")) {
@@ -58,6 +59,10 @@ public class ParserTest {
         // filePath = new File("C:/Users/Ian/OneDrive/Projects/Coding Projects/Java Projects/StaVa/stava/src/test/java/com/teriyake/stava/parsertest/ParserTest.json");
         // String toFile = gson.toJson(json);
         // StavaUtil.writeFile(filePath, toFile);
+        System.out.println("\nPlayer info of: " + player.info().getName());
+        System.out.println("Region: " + player.info().getRegion());
+        System.out.println("Episode/Act: " + player.info().getSeason());
+        System.out.println("Date: " + player.info().getDate());
 
 
         System.out.println("\n" + mode.info().getType());
