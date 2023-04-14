@@ -55,7 +55,7 @@ public class Retriever {
      * Returns whether retrieved data is being stored. 
      * @return Whether retrieved data is being stored. 
      */
-    public boolean getToStore() {
+    public boolean toStore() {
         return toStore;
     }
     /**
