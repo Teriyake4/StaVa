@@ -21,7 +21,7 @@ import com.teriyake.stava.stats.player.PlayerWeapon;
 public class PlayerParser {
 
     /**
-     * Orginize the player data of the json string
+     * Orginizes the player data of the json string, and sets the metadata
      * @param jsonString
      * @return JsonObject with general metadata information
      */
@@ -29,6 +29,8 @@ public class PlayerParser {
         Gson gson = new Gson(); // error when it gets 403?
         JsonObject initJson = gson.fromJson(jsonString, JsonObject.class);
         initJson = initJson.get("data").getAsJsonObject();
+        JsonArray segments = initJson
+            .get("segments").getAsJsonArray();
         JsonObject metadata = new JsonObject();
 
         String data = initJson
@@ -61,14 +63,27 @@ public class PlayerParser {
         data = dateTime.format(formatter);
         metadata.addProperty("date", data);
 
+        for(int i = 0; i < segments.size(); i++) {
+            String type = segments.get(i).getAsJsonObject()
+                .get("type").getAsString();
+            if(type.equals("season")) {
+                data = segments.get(i).getAsJsonObject()
+                    .get("metadata").getAsJsonObject()
+                    .get("name").getAsString();
+                int index = data.indexOf(" ");
+                data = data.substring(index + 1);
+                data = data.replace(" ACT ", "");
+                index = data.indexOf(" ");
+                data = data.substring(0, index);
+                metadata.addProperty("season", data);
+                break;
+            }
+        }
+
         data = initJson
             .get("metadata").getAsJsonObject()
             .get("defaultSeason").getAsString();
         metadata.addProperty("seasonID", data);
-
-
-        JsonArray segments = initJson
-            .get("segments").getAsJsonArray();
 
         JsonObject playerJson = new JsonObject();
         playerJson.add("metadata", metadata);
@@ -209,6 +224,32 @@ public class PlayerParser {
     }
 
     /**
+     * 
+     * @param jsonPlayer JsonObject to get the data from
+     * @param type of data to get
+     * @param sub subtype of data to get from the type. 
+     * @return JsonObject of the specified subtype data from jsonPlayer
+     */
+    private static JsonObject getSubType(JsonObject jsonPlayer, String type, String sub) {
+        jsonPlayer = jsonPlayer
+            .get(type).getAsJsonObject()
+            .get(sub).getAsJsonObject();
+        JsonObject innerData = jsonPlayer.get("metadata").getAsJsonObject();
+        String gameMode = innerData.get("gameMode").getAsString();
+        // String itemImage = "";
+        // itemImage = innerData.get("itemImageURL").getAsString();
+
+        JsonObject metadata = jsonPlayer.get("metadata").getAsJsonObject();
+        metadata.addProperty("type", type);
+        metadata.addProperty("subType", sub);
+        metadata.addProperty("gameMode", gameMode);
+        // metadata.addProperty("itemImageURL", itemImage);
+        jsonPlayer.remove("metadata");
+        jsonPlayer.add("info", metadata);
+        return jsonPlayer;
+    }
+
+    /**
      * Get the segment list of types
      * @param jsonString
      * @return Map<String, ArrayList<String>> with key as the type and the value
@@ -216,8 +257,7 @@ public class PlayerParser {
      */
     public static Map<String, ArrayList<String>> getTypes(String jsonString) {
         JsonObject preJson = preParse(jsonString);
-        JsonArray jsonSegments = preJson
-            .get("segments").getAsJsonArray();
+        JsonArray jsonSegments = preJson.get("segments").getAsJsonArray();
         Map<String, ArrayList<String>> output = new HashMap<String, ArrayList<String>>();
         ArrayList<String> season = new ArrayList<String>();
         ArrayList<String> agent = new ArrayList<String>();
@@ -248,32 +288,6 @@ public class PlayerParser {
         output.put("map", map);
         output.put("weapon", weapon);
         return output;
-    }
-
-    /**
-     * 
-     * @param jsonPlayer JsonObject to get the data from
-     * @param type of data to get
-     * @param sub subtype of data to get from the type. 
-     * @return JsonObject of the specified subtype data from jsonPlayer
-     */
-    private static JsonObject getSubType(JsonObject jsonPlayer, String type, String sub) {
-        jsonPlayer = jsonPlayer
-            .get(type).getAsJsonObject()
-            .get(sub).getAsJsonObject();
-        JsonObject innerData = jsonPlayer.get("metadata").getAsJsonObject();
-        String gameMode = innerData.get("gameMode").getAsString();
-        // String itemImage = "";
-        // itemImage = innerData.get("itemImageURL").getAsString();
-
-        JsonObject metadata = jsonPlayer.get("metadata").getAsJsonObject();
-        metadata.addProperty("type", type);
-        metadata.addProperty("subType", sub);
-        metadata.addProperty("gameMode", gameMode);
-        // metadata.addProperty("itemImageURL", itemImage);
-        jsonPlayer.remove("metadata");
-        jsonPlayer.add("info", metadata);
-        return jsonPlayer;
     }
 
     /**
