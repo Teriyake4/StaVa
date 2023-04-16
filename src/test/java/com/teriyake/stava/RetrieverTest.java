@@ -18,7 +18,7 @@ public class RetrieverTest {
         String[] results = null;
         try {
             System.out.println("Creating connection");
-            ret = new Retriever(file, true);
+            ret = new Retriever(file);
             System.out.println("Connected");
             results = ret.getSearch("el trucko");
             p = ret.getPlayer(name);
