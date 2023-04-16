@@ -15,10 +15,10 @@ import com.teriyake.stava.HttpStatusException;
  * status exceptions. 
  */
 public class ConnectPage {
-    Playwright playwright;
-    Browser process;
-    BrowserContext browser;
-    Page page;
+    private Playwright playwright;
+    private Browser process;
+    private BrowserContext browser;
+    private Page page;
     /**
      * Creates a new ConnectPage instance that can 
      * be used to retrieve player data and matches from the 
@@ -27,6 +27,36 @@ public class ConnectPage {
      */
     public ConnectPage() throws PlaywrightException {
         connect();
+    }
+    /**
+     * This method is called by the constructer. This method establishes a 
+     * connection to the Valorant Tracker.gg API. 
+     * @throws PlaywrightException
+     */
+    public void connect() throws PlaywrightException {
+        playwright = Playwright.create();
+        process = playwright.chromium()
+            .launch(new BrowserType.LaunchOptions().setChannel("msedge"));
+        Page tempPage = process.newPage();
+        String userAgent = tempPage.evaluate("navigator.userAgent").toString();
+        tempPage.close();
+
+        userAgent = userAgent.replaceFirst("Headless", "");
+        browser = process.newContext(new Browser.NewContextOptions()
+            .setUserAgent(userAgent));
+        page = browser.newPage();
+        page.setDefaultNavigationTimeout(4000);
+    }
+    /**
+     * This method closes the connection to free up resources.
+     * This method should be called when finished using the 
+     * ConnectPage instance. 
+     */
+    public void close() {
+        page.close();
+        browser.close();
+        process.close();
+        playwright.close();
     }
     /**
      * loads page while handling any exceptions and stores in playerPage. 
@@ -41,7 +71,7 @@ public class ConnectPage {
             rep = page.navigate(url);
             statusCode = rep.status();
         }
-             catch(PlaywrightException e) {
+        catch(PlaywrightException e) {
             e.printStackTrace();
         }
              switch(statusCode) {
@@ -61,38 +91,6 @@ public class ConnectPage {
         return rep;
     }
     /**
-     * This method is called by the constructer. This method establishes a 
-     * connection to the Valorant Tracker.gg API. 
-     * @throws PlaywrightException
-     */
-    public void connect() throws PlaywrightException {
-        playwright = Playwright.create();
-        process = playwright.chromium()
-            .launch(new BrowserType.LaunchOptions().setChannel("msedge"));
-        Page tempPage = process.newPage();
-        String userAgent = tempPage.evaluate("navigator.userAgent").toString();
-        tempPage.close();
-
-        userAgent = userAgent.replaceFirst("Headless", "");
-
-        browser = process.newContext(new Browser.NewContextOptions()
-            .setUserAgent(userAgent));
-        page = browser.newPage();
-        page.setDefaultNavigationTimeout(4000);
-    }
-    /**
-     * This method closes the connection to free up resources.
-     * This method should be called when finished using the 
-     * ConnectPage instance. 
-     */
-    public void close() {
-        page.close();
-        browser.close();
-        process.close();
-        playwright.close();
-    }
-
-    /**
      * Loads the search results page for a given player name and returns the page's text as a string in JSON format.
      * @param name the player name to search for. Can include tagline, e.g. "example#NA1" or "example"
      * @return the search page as a string containing player IDs in JSON format
@@ -106,10 +104,8 @@ public class ConnectPage {
         searchURL += name + "&autocomplete=true";
 
         String searchPage = loadPage(searchURL).text();
-
         return searchPage;
     }
-
     /**
      * Loads the player profile page for a given player name and returns the page's text as a string.
      * @param name the player name including tagline, e.g. "example#NA1"
@@ -123,10 +119,8 @@ public class ConnectPage {
         pageURL += name + "?source=web";
 
         String profilePage = loadPage(pageURL).text();
-
         return profilePage;
     }
-
     /**
      * Loads the player's competitive matches page for a given player name and returns the page's text as a string.
      * @param name the player name including tagline, e.g. "example#NA1"
@@ -140,7 +134,7 @@ public class ConnectPage {
         pageURL += name + "?type=competitive";
 
         String profileMatchesPage = loadPage(pageURL).text();
-             return profileMatchesPage;
+        return profileMatchesPage;
     }
 
     // general match
