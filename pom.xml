@@ -4,8 +4,8 @@
   <groupId>com.teriyake.stava</groupId>
   <artifactId>stava</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.0</version>
-  <name>stava</name>
+  <version>0.1.0</version>
+  <name>StaVa</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
@@ -16,15 +16,15 @@
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
     <dependency>
-        <groupId>com.microsoft.playwright</groupId>
-        <artifactId>playwright</artifactId>
-        <version>1.30.0</version>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>playwright</artifactId>
+      <version>1.30.0</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
     <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.8.9</version>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.9</version>
     </dependency>
   </dependencies>
   <build>
