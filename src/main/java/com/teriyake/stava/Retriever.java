@@ -1,17 +1,11 @@
 package com.teriyake.stava;
 
-import java.io.File;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.microsoft.playwright.PlaywrightException;
 import com.teriyake.stava.connection.ConnectPage;
 import com.teriyake.stava.parser.BasicParser;
 import com.teriyake.stava.parser.PlayerParser;
-import com.teriyake.stava.stats.Metadata;
 import com.teriyake.stava.stats.Player;
 import com.teriyake.stava.stats.player.PlayerAgent;
-import com.teriyake.stava.stats.player.PlayerBase;
 import com.teriyake.stava.stats.player.PlayerMap;
 import com.teriyake.stava.stats.player.PlayerMode;
 import com.teriyake.stava.stats.player.PlayerWeapon;
@@ -21,106 +15,37 @@ import com.teriyake.stava.stats.player.PlayerWeapon;
  */
 public class Retriever {
     private static ConnectPage connect;
-    private File storePath; // C:/ProgramData/StaVa
-    private boolean toStore;
+    private Store storage;
     /**
-     * Constructs a new Retriever object without filepath to store 
-     * data and to not automatically store retrieved data. 
+     * Constructs a new Retriever instance creating connection 
+     * without filepath to store data and to not automatically 
+     * store retrieved data. 
      * @throws PlaywrightException if connection is unsuccessful. 
      */
-    public Retriever() throws PlaywrightException {
-        toStore = false;
-        connect = new ConnectPage();
+    public Retriever() {
+        storage = null;
+        connect();
     }
     /**
-     * Constructs a new Retriever object without filepath to store 
-     * data and storing data set to false; 
+     * Constructs a new Retriever instance creating connection 
+     * with storage to automatically store data. 
      * @param path The path of where to store retrieved data. 
-     * @param store Whether to store retrieved data. 
      * @throws PlaywrightException if connection is unsuccessful. 
      */
-    public Retriever(File path, boolean store) throws PlaywrightException {
-        storePath = new File(path, "data");
-        toStore = store;
-        connect = new ConnectPage();
+    public Retriever(Store store){
+        storage = store;
+        connect();
+    }
+
+    public void setStorage(Store store) {
+        storage = store;
     }
     /**
-     * Sets whether retrieved data should be stored. 
-     * @param toLog Whether to store retrieved data. 
+     * Creates Connection. Use only if connection was closed previously. 
      */
-    public void setToStore(boolean store) {
-        toStore = store;
-    }
-    /**
-     * Returns whether retrieved data is being stored. 
-     * @return Whether retrieved data is being stored. 
-     */
-    public boolean toStore() {
-        return toStore;
-    }
-    /**
-     * Set the file path of where the retrieved data should be stored. 
-     * @param filePath The path of where to store retrieved data. 
-     */
-    public void setStorePath(File filePath) {
-        storePath = filePath;
-    }
-    /**
-     * Returns the path where the retrieved data is being stored. 
-     * @return The path where the retrieved data is being stored. 
-     */
-    public File getStorePath() {
-        return storePath;
-    }
-    /**
-     * Stores retrieved data for player, given is metadata and data itself. 
-     * @param info The metadata of the data to store. 
-     * @param toWrite The data to store. 
-     */
-    private void storePlayerData(Metadata info, String toWrite) {
-        String child = info.getUserID();
-        File storeTo = new File(storePath, "player/" + child);
-        if(!storeTo.exists()) {
-            storeTo.mkdirs();
-            storeTo = new File(storeTo, info.getType() + ".json");
-            try {
-                storeTo.createNewFile();
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            storeTo = new File(storeTo, info.getType() + ".json");
-        }
-        StavaUtil.writeFile(storeTo, toWrite, false);
-        // set index
-        File index = new File(storePath, "index.txt");
-        toWrite = info.getName() + " = " + info.getUserID();
-        if(!StavaUtil.readFile(index).contains(toWrite)) {
-            StavaUtil.writeFile(index, toWrite + "\n", true);
-        }
-    }
-    /**
-     * Stores retrieved data of player sub classes extending PlayerBase. 
-     * @param <T> The player sub classes extending PlayerBase. 
-     * @param player The data to store. 
-     */
-    public <T extends PlayerBase> void store(T player) {
-        Metadata info = player.info();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String toWrite = gson.toJson(player);
-        storePlayerData(info, toWrite);
-    }
-    /**
-     * Stores retrieved data of Player. 
-     * @param player The data to store. 
-     */
-    public void store(Player player) {
-        Metadata info = player.info();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String toWrite = gson.toJson(player);
-        storePlayerData(info, toWrite);
+    public void connect() {
+        if(connect == null)
+            connect = new ConnectPage();
     }
     /**
      * Closes connection. Best to call this method after use of this 
@@ -150,9 +75,8 @@ public class Retriever {
     public Player getPlayer(String name) throws HttpStatusException {
         String playerData = connect.getProfilePage(name);
         Player player = PlayerParser.getPlayer(playerData);
-        if(toStore) {
-            store(player);
-        }
+        if(storage != null)
+            storage.store(player);
         return player;
     } 
     /**
@@ -166,9 +90,8 @@ public class Retriever {
     public PlayerMode getPlayerMode(String name, String mode) throws HttpStatusException {
         String playerData = connect.getProfilePage(name);
         PlayerMode player = PlayerParser.getPlayerMode(playerData, mode);
-        if(toStore) {
-            store(player);
-        }
+        if(storage != null)
+            storage.store(player);
         return player;
     }
     /**
@@ -182,9 +105,8 @@ public class Retriever {
     public PlayerMap getPlayerMap(String name, String map) throws HttpStatusException {
         String playerData = connect.getProfilePage(name);
         PlayerMap player = PlayerParser.getPlayerMap(playerData, map);
-        if(toStore) {
-            store(player);
-        }
+        if(storage != null)
+            storage.store(player);
         return player;
     }
     /**
@@ -198,9 +120,8 @@ public class Retriever {
     public PlayerAgent getPlayerAgent(String name, String agent) throws HttpStatusException {
         String playerData = connect.getProfilePage(name);
         PlayerAgent player = PlayerParser.getPlayerAgent(playerData, agent);
-        if(toStore) {
-            store(player);
-        }
+        if(storage != null)
+            storage.store(player);
         return player;
     }
     /**
@@ -214,9 +135,8 @@ public class Retriever {
     public PlayerWeapon getPlayerWeapon(String name, String weapon) throws HttpStatusException {
         String playerData = connect.getProfilePage(name);
         PlayerWeapon player = PlayerParser.getPlayerWeapon(playerData, weapon);
-        if(toStore) {
-            store(player);
-        }
+        if(storage != null)
+            storage.store(player);
         return player;
     }
 
