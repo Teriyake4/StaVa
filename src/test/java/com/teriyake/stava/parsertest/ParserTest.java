@@ -61,7 +61,7 @@ public class ParserTest {
         // StavaUtil.writeFile(filePath, toFile);
         System.out.println("\nPlayer info of: " + player.info().getName());
         System.out.println("Region: " + player.info().getRegion());
-        System.out.println("Episode/Act: " + player.info().getSeason());
+        System.out.println("Episode, Act: " + player.info().getSeason());
         System.out.println("Date: " + player.info().getDate());
 
 
