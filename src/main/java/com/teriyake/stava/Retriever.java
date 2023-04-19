@@ -11,15 +11,13 @@ import com.teriyake.stava.stats.player.PlayerMode;
 import com.teriyake.stava.stats.player.PlayerWeapon;
 
 /**
- * Main class to retrieve, automatically parse, and store data. 
+ * Main class to retrieve and automatically parse.Option to also store data using the Store class. 
  */
 public class Retriever {
     private static ConnectPage connect;
     private Store storage;
     /**
      * Constructs a new Retriever instance creating connection 
-     * without filepath to store data and to not automatically 
-     * store retrieved data. 
      * @throws PlaywrightException if connection is unsuccessful. 
      */
     public Retriever() {
@@ -36,9 +34,18 @@ public class Retriever {
         storage = store;
         connect();
     }
-
+    /**
+     * Set a Store instance to store parsed data. 
+     * @param store
+     */
     public void setStorage(Store store) {
         storage = store;
+    }
+    /**
+     * Removes Store, will not store data.
+     */
+    public void removeStorage() {
+        storage = null;
     }
     /**
      * Creates Connection. Use only if connection was closed previously. 

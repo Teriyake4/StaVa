@@ -12,19 +12,27 @@ public class Store {
     private File filePath; // C:/ProgramData/StaVa
     private String pattern; // ie A2, unit such as Acts and number
     private boolean idAsFileName;
-
+    /**
+     * Constructs a new Store instance with a filepath of where to store the data. 
+     * @param path of where to store data as a File object. 
+     */
     public Store(File path) {
         filePath = new File(path, "StaVa/data");
         pattern = null;
         idAsFileName = true;
     }
-
+    /**
+     * Constructs a new Store instance with a filepath of where to store the data. 
+     * @param path of where to store data as a String. 
+     */
     public Store(String path) {
         filePath = new File(path + "StaVa/data");
         pattern = null;
         idAsFileName = true;
     }
-
+    /**
+     * Constructs a new Store instance with a default filepath. 
+     */
     public Store() {
         String path = System.getProperty("user.home");
         filePath = new File(path + "StaVa/data");
@@ -44,19 +52,27 @@ public class Store {
     public File getFilePath() {
         return filePath;
     }
+    /**
+     * Set file name as player id when storing. 
+     */
     public void setFileNameAsName() {
         idAsFileName = false;
     }
+    /**
+     * Set file name as player name when storing. 
+     */
     public void setFileNameAsId() {
         idAsFileName = true;
     }
     /**
-     * 
-     * @param numOfActs to organize player data by act. 
+     * Seperates player data by act. 
      */
     public void setStorePatternByAct() {
         pattern = "A";
     }
+    /**
+     * Seperates player data by episode. 
+     */
     public void setStorePatternByEpisode() {
         pattern = "E";
     }
@@ -96,6 +112,12 @@ public class Store {
         // if(!StavaUtil.readFile(index).contains(toWrite))
         //     StavaUtil.writeFile(index, toWrite + "\n", true);
     }
+    /**
+     * Gives the filepath of where the data should be stored based on 
+     * its metadata and the store pattern of this Store instance. 
+     * @param info The metadata of the data to store. 
+     * @return The path of where the data should be stored. 
+     */
     private File getFilePath(Metadata info) {
         String path = "player/";
         switch(pattern) {
