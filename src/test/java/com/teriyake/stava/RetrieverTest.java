@@ -1,6 +1,5 @@
 package com.teriyake.stava;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import com.teriyake.stava.stats.Player;
@@ -11,14 +10,14 @@ public class RetrieverTest {
     public static void main(String[] args) {
         String name = "EL TRUCKO#saucy";
 
-        String filePath = "C:/ProgramData/StaVa";
-        File file = new File(filePath);
+        // String filePath = "C:/ProgramData/StaVa";
+        // File file = new File(filePath);
         Retriever ret = null;
         Player p = null;
         String[] results = null;
         try {
             System.out.println("Creating connection");
-            ret = new Retriever(file);
+            ret = new Retriever();
             System.out.println("Connected");
             results = ret.getSearch("el trucko");
             p = ret.getPlayer(name);
