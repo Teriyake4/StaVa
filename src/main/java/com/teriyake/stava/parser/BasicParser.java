@@ -21,6 +21,29 @@ public class BasicParser {
         return finalData;
     }
 
+    public static String[] getNonPrivateSearchResults(String jsonString) {
+        Gson gson = new Gson();
+        JsonObject initJson = gson.fromJson(jsonString, JsonObject.class);
+        JsonArray results = initJson.get("data").getAsJsonArray();
+        int size = 0;
+        for(int i = 0; i < results.size(); i++) {
+            if(!results.get(i).getAsJsonObject().get("status").isJsonNull())
+                size++;
+        }
+        String[] finalData = new String[size];
+        if(size == 0)
+            return finalData;
+        int finalIndex = 0;
+        for(int i = 0; i < results.size(); i++) {
+            if(results.get(i).getAsJsonObject().get("status").isJsonNull())
+                continue;
+            finalData[finalIndex] = results.get(i).getAsJsonObject()
+                .get("platformUserIdentifier").getAsString();
+            finalIndex++;
+        }
+        return finalData;
+    }
+
     public static String[] getOrderedSearchResults(String jsonString, String query) {
         /*
         * x minutes ago

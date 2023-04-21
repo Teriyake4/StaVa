@@ -63,13 +63,24 @@ public class Retriever {
     }
     /**
      * Searches for specified player returning an array of results. 
-     * @param name The player to seach for. 
+     * @param name The player to search for. 
      * @return The results of searched player. 
      * @throws HttpStatusException
      */
     public String[] getSearch(String name) throws HttpStatusException {
         String jsonResults = connect.getSearchPage(name);
         String[] results = BasicParser.getSearchResults(jsonResults);
+        return results;
+    }
+    /**
+     * Searches for specified player returning an array of results for non private accounts. 
+     * @param name The player to search for. 
+     * @return The non private results of searched player. 
+     * @throws HttpStatusException
+     */
+    public String[] getNonPrivateSearch(String name) throws HttpStatusException {
+        String jsonResults = connect.getSearchPage(name);
+        String[] results = BasicParser.getNonPrivateSearchResults(jsonResults);
         return results;
     }
     /**
