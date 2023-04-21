@@ -1,7 +1,7 @@
 ## StaVa: Stats for Valorant API
 
 
-Stava is a Java library for retrieving stats and information about players in Valorant. This is a personal project so support and development may be slow. Stava uses the Valorant Tracker API to retrieve all the information. 
+StaVa is a Java library for retrieving stats and information about players in Valorant. This is a personal project so support and development may be slow. Stava uses the Valorant Tracker API to retrieve all the information. 
 
 Player stats are organized as objects seperated by the different types of stats as classes. For instance stats for a specific agent such as Omen will be as a PlayerAgent Object. Classes will have getter methods to retrieve information. 
 
