@@ -19,11 +19,10 @@ String name = "example#tag";
 // Tracker.gg and with this code specifically, 
 // should have one comp game
 
-Retriever ret = null;
 Player p = null;
 try {
     System.out.println("Creating connection");
-    ret = new Retriever(); // This can throw an error, but unlikely
+    Retriever ret = new Retriever(); // This can throw an error, but unlikely
     System.out.println("Connected");
     p = ret.getPlayer(name); // More likely to throw an error
     ret.closeConnection();
