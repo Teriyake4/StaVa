@@ -23,7 +23,6 @@ public class RetrieverTest {
             p = ret.getPlayer(name);
             ret.closeConnection();
         }
-
         catch(Exception e) {
             e.printStackTrace();
         }
