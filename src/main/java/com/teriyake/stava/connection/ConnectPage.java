@@ -96,7 +96,7 @@ public class ConnectPage {
      * @return the search page as a string containing player IDs in JSON format
      * @throws HttpStatusException if an HTTP error occurs while loading the page, e.g. 403 or 404
      */
-    public String getSearchPage(String name) throws HttpStatusException {
+    public String getSearch(String name) throws HttpStatusException {
         String searchURL = 
         "https://api.tracker.gg/api/v2/valorant/standard/search?platform=riot&query=";
         name = name.replaceAll(" ", "%20");
@@ -112,7 +112,7 @@ public class ConnectPage {
      * @return the profile page as a string in JSON format
      * @throws HttpStatusException if an HTTP error occurs while loading the page, e.g. 403 or 404
      */
-    public String getProfilePage(String name) throws HttpStatusException {
+    public String getProfile(String name) throws HttpStatusException {
         String pageURL = "https://api.tracker.gg/api/v2/valorant/standard/profile/riot/";
         name = name.replaceAll(" ", "%20");
         name = name.replaceAll("#", "%23");
@@ -122,12 +122,12 @@ public class ConnectPage {
         return profilePage;
     }
     /**
-     * Loads the player's competitive matches page for a given player name and returns the page's text as a string.
+     * Loads the recent matches for given player name and returns the page's text as a string.
      * @param name the player name including tagline, e.g. "example#NA1"
      * @return the competitive matches page as a string in JSON format
      * @throws HttpStatusException if an HTTP error occurs while loading the page, e.g. 403 or 404
      */
-    public String getProfileMatchesPage(String name) throws HttpStatusException {
+    public String getRecentMatches(String name) throws HttpStatusException {
         String pageURL = "https://api.tracker.gg/api/v2/valorant/standard/matches/riot/";
         name = name.replaceAll(" ", "%20");
         name = name.replaceAll("#", "%23");
@@ -136,6 +136,7 @@ public class ConnectPage {
         String profileMatchesPage = loadPage(pageURL).text();
         return profileMatchesPage;
     }
+    // https://api.tracker.gg/api/v2/valorant/standard/matches/riot/xVeg%23NA1?type=competitive
 
     // general match
     // https://api.tracker.gg/api/v2/valorant/standard/matches/7dce3e6d-63ce-4e97-914e-9a6e5542a8c7
@@ -151,4 +152,7 @@ public class ConnectPage {
 
     // best matches, different ways to sort
     // https://api.tracker.gg/api/v2/valorant/standard/profile/riot/EL%20TRUCKO%23saucy/stats/playlist/kills?playlist=competitive
+
+    // list of recent matches with parameters
+    // https://api.tracker.gg/api/v2/valorant/standard/matches/riot/xVeg%23NA1?type=competitive&season=34093c29-4306-43de-452f-3f944bde22be&agent=all&map=all
 }
