@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-public class BasicParser {
+public class SearchParser {
 
     public static String[] getSearchResults(String jsonString) {
         Gson gson = new Gson(); // error when it gets 403?
