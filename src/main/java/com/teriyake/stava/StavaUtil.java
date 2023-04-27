@@ -23,10 +23,6 @@ public class StavaUtil {
             e.printStackTrace();
             return output;
         }
-        // checks if file is empty
-        if(output.equals("") || output.equals("\n")) {
-            return output;
-        }
         return output;
     }
 
