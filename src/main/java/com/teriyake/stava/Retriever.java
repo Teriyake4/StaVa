@@ -3,6 +3,7 @@ package com.teriyake.stava;
 import com.microsoft.playwright.PlaywrightException;
 import com.teriyake.stava.connection.ConnectPage;
 import com.teriyake.stava.parser.SearchParser;
+import com.teriyake.stava.parser.MatchParser;
 import com.teriyake.stava.parser.PlayerParser;
 import com.teriyake.stava.stats.Player;
 import com.teriyake.stava.stats.player.PlayerAgent;
@@ -17,7 +18,7 @@ public class Retriever {
     private static ConnectPage connect;
     private Store storage;
     /**
-     * Constructs a new Retriever instance creating connection 
+     * Constructs a new Retriever instance creating connection. 
      * @throws PlaywrightException if connection is unsuccessful. 
      */
     public Retriever() {
@@ -33,6 +34,21 @@ public class Retriever {
     public Retriever(Store store){
         storage = store;
         connect();
+    }
+    /**
+     * Constructs a new Retriever instance with the given connection. 
+     * @param connection to pass to the Retriever instance. 
+     */
+    public Retriever(ConnectPage connection) {
+        connect = connection;
+        storage = null;
+    }
+    /**
+     * Return 
+     * @return
+     */
+    public Store getStorage() {
+        return storage;
     }
     /**
      * Set a Store instance to store parsed data. 
@@ -68,7 +84,7 @@ public class Retriever {
      * @throws HttpStatusException
      */
     public String[] getSearch(String name) throws HttpStatusException {
-        String jsonResults = connect.getSearch(name);
+        String jsonResults = connect.getSearchPage(name);
         String[] results = SearchParser.getSearchResults(jsonResults);
         return results;
     }
@@ -79,7 +95,7 @@ public class Retriever {
      * @throws HttpStatusException
      */
     public String[] getNonPrivateSearch(String name) throws HttpStatusException {
-        String jsonResults = connect.getSearch(name);
+        String jsonResults = connect.getSearchPage(name);
         String[] results = SearchParser.getNonPrivateSearchResults(jsonResults);
         return results;
     }
@@ -91,7 +107,7 @@ public class Retriever {
      * @throws HttpStatusException
      */
     public Player getPlayer(String name) throws HttpStatusException {
-        String playerData = connect.getProfile(name);
+        String playerData = connect.getProfilePage(name);
         Player player = PlayerParser.getPlayer(playerData);
         if(storage != null)
             storage.store(player);
@@ -106,7 +122,7 @@ public class Retriever {
      * @throws HttpStatusException
      */
     public PlayerMode getPlayerMode(String name, String mode) throws HttpStatusException {
-        String playerData = connect.getProfile(name);
+        String playerData = connect.getProfilePage(name);
         PlayerMode player = PlayerParser.getPlayerMode(playerData, mode);
         if(storage != null)
             storage.store(player);
@@ -121,7 +137,7 @@ public class Retriever {
      * @throws HttpStatusException
      */
     public PlayerMap getPlayerMap(String name, String map) throws HttpStatusException {
-        String playerData = connect.getProfile(name);
+        String playerData = connect.getProfilePage(name);
         PlayerMap player = PlayerParser.getPlayerMap(playerData, map);
         if(storage != null)
             storage.store(player);
@@ -136,7 +152,7 @@ public class Retriever {
      * @throws HttpStatusException
      */
     public PlayerAgent getPlayerAgent(String name, String agent) throws HttpStatusException {
-        String playerData = connect.getProfile(name);
+        String playerData = connect.getProfilePage(name);
         PlayerAgent player = PlayerParser.getPlayerAgent(playerData, agent);
         if(storage != null)
             storage.store(player);
@@ -151,11 +167,25 @@ public class Retriever {
      * @throws HttpStatusException
      */
     public PlayerWeapon getPlayerWeapon(String name, String weapon) throws HttpStatusException {
-        String playerData = connect.getProfile(name);
+        String playerData = connect.getProfilePage(name);
         PlayerWeapon player = PlayerParser.getPlayerWeapon(playerData, weapon);
         if(storage != null)
             storage.store(player);
         return player;
+    }
+    /**
+     * temp
+     * @param name
+     * @return
+     */
+    public String[] getPlayersFromRecentMatch(String name) throws HttpStatusException {
+        String[] players = new String[10];
+        String recentMatch = connect.getRecentMatchesPage(name);
+        String matchId = MatchParser.getMatchFromRecentMatchs(recentMatch);
+        String match = connect.getMatchPage(matchId);
+        players = MatchParser.getPlayers(match);
+
+        return players;
     }
 
 }
