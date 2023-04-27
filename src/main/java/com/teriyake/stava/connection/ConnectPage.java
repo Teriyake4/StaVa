@@ -96,7 +96,7 @@ public class ConnectPage {
      * @return the search page as a string containing player IDs in JSON format
      * @throws HttpStatusException if an HTTP error occurs while loading the page, e.g. 403 or 404
      */
-    public String getSearch(String name) throws HttpStatusException {
+    public String getSearchPage(String name) throws HttpStatusException {
         String searchURL = 
         "https://api.tracker.gg/api/v2/valorant/standard/search?platform=riot&query=";
         name = name.replaceAll(" ", "%20");
@@ -112,7 +112,7 @@ public class ConnectPage {
      * @return the profile page as a string in JSON format
      * @throws HttpStatusException if an HTTP error occurs while loading the page, e.g. 403 or 404
      */
-    public String getProfile(String name) throws HttpStatusException {
+    public String getProfilePage(String name) throws HttpStatusException {
         String pageURL = "https://api.tracker.gg/api/v2/valorant/standard/profile/riot/";
         name = name.replaceAll(" ", "%20");
         name = name.replaceAll("#", "%23");
@@ -127,7 +127,7 @@ public class ConnectPage {
      * @return the competitive matches page as a string in JSON format
      * @throws HttpStatusException if an HTTP error occurs while loading the page, e.g. 403 or 404
      */
-    public String getRecentMatches(String name) throws HttpStatusException {
+    public String getRecentMatchesPage(String name) throws HttpStatusException {
         String pageURL = "https://api.tracker.gg/api/v2/valorant/standard/matches/riot/";
         name = name.replaceAll(" ", "%20");
         name = name.replaceAll("#", "%23");
