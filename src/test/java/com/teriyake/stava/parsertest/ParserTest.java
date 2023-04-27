@@ -3,6 +3,8 @@ package com.teriyake.stava.parsertest;
 import java.io.File;
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.teriyake.stava.StavaUtil;
 import com.teriyake.stava.parser.PlayerParser;
 import com.teriyake.stava.stats.Player;
@@ -33,37 +35,37 @@ public class ParserTest {
         PlayerAgent agent = null;
         PlayerWeapon weapon = null;
         Player player = null;
-        try {
             // mode = PlayerParser.getPlayerMode(file, "competitive");
             // map = PlayerParser.getPlayerMap(file, "lotus");
             // agent = PlayerParser.getPlayerAgent(file, "viper");
             // weapon = PlayerParser.getPlayerWeapon(file, "vandal");
-            player = PlayerParser.getPlayer(file);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
+        player = PlayerParser.getPlayer(file);
         System.out.println("Done Parsing!");
+
         mode = player.getMode("competitive");
         map = player.getMap("lotus");
         agent = player.getAgent("viper");
         weapon = player.getWeapon("vandal");
+
         // System.out.println(PlayerParser.getTypes(file));
 
         // System.out.println(PlayerParser.getPlayer(file));
 
 
-        // Gson gson = new GsonBuilder().setPrettyPrinting().setLenient().create();
-        // System.out.println(json);
+        Gson gson = new GsonBuilder().setPrettyPrinting().setLenient().create();
+        System.out.println(gson.toJson(player));
 
         // filePath = new File("C:/Users/Ian/OneDrive/Projects/Coding Projects/Java Projects/StaVa/stava/src/test/java/com/teriyake/stava/parsertest/ParserTest.json");
         // String toFile = gson.toJson(json);
         // StavaUtil.writeFile(filePath, toFile);
+
+
+
+        
         System.out.println("\nPlayer info of: " + player.info().getName());
         System.out.println("Region: " + player.info().getRegion());
         System.out.println("Episode, Act: " + player.info().getSeason());
         System.out.println("Date: " + player.info().getDate());
-
 
         System.out.println("\n" + mode.info().getType());
         System.out.println("Type: " + mode.info().getGameMode());
@@ -110,6 +112,8 @@ public class ParserTest {
             System.out.println("Winrate: " + weaponList.get(i).getMatchesWinPct());
             System.out.println("Headshot: " + weaponList.get(i).getHeadshotsPercentage());
         }
+
+
 
 
         // System.out.println();
