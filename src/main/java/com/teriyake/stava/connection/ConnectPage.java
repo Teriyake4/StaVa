@@ -140,6 +140,13 @@ public class ConnectPage {
 
     // general match
     // https://api.tracker.gg/api/v2/valorant/standard/matches/7dce3e6d-63ce-4e97-914e-9a6e5542a8c7
+    public String getMatchPage(String matchId) throws HttpStatusException {
+        String pageURL = "https://api.tracker.gg/api/v2/valorant/standard/matches/";
+        pageURL += matchId;
+
+        String matchPage = loadPage(pageURL).text();
+        return matchPage;
+    }
 
     // leaderboard
     // https://api.tracker.gg/api/v1/valorant/standard/leaderboards?type=ranked&platform=all&board=ranked&region=global&act=9c91a445-4f78-1baa-a3ea-8f8aadf4914d&skip=0&take=100
