@@ -2,6 +2,7 @@ package com.teriyake.stava.stats;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.teriyake.stava.stats.player.PlayerAgent;
 import com.teriyake.stava.stats.player.PlayerBase;
@@ -14,21 +15,21 @@ import com.teriyake.stava.stats.player.PlayerWeapon;
  */
 public class Player {
     private Metadata info;
-    private ArrayList<PlayerMode> modeStats;
-    private ArrayList<PlayerMap> mapStats;
-    private ArrayList<PlayerAgent> agentStats;
-    private ArrayList<PlayerWeapon> weaponStats;
+    private Map<String, PlayerMode> modeStats;
+    private Map<String, PlayerMap> mapStats;
+    private Map<String, PlayerAgent> agentStats;
+    private Map<String, PlayerWeapon> weaponStats;
 
     /**
      * Constructs a new Player object with the given statistics and metadata.
-     * @param mode An ArrayList of PlayerMode objects representing the player's statistics for different game modes.
-     * @param map An ArrayList of PlayerMap objects representing the player's statistics for different game maps.
-     * @param agent An ArrayList of PlayerAgent objects representing the player's statistics for different game agents.
-     * @param weapon An ArrayList of PlayerWeapon objects representing the player's statistics for different game weapons.
+     * @param mode An Map of PlayerMode objects representing the player's statistics for different game modes.
+     * @param map An Map of PlayerMap objects representing the player's statistics for different game maps.
+     * @param agent An Map of PlayerAgent objects representing the player's statistics for different game agents.
+     * @param weapon An Map of PlayerWeapon objects representing the player's statistics for different game weapons.
      * @param metadata A Metadata object representing the player's metadata.
      */
-    public Player(ArrayList<PlayerMode> mode, ArrayList<PlayerMap> map, 
-        ArrayList<PlayerAgent> agent, ArrayList<PlayerWeapon> weapon, Metadata metadata) {
+    public Player(Map<String, PlayerMode> mode, Map<String, PlayerMap> map, 
+        Map<String, PlayerAgent> agent, Map<String, PlayerWeapon> weapon, Metadata metadata) {
             modeStats = mode;
             mapStats = map;
             agentStats = agent;
@@ -43,59 +44,65 @@ public class Player {
     public Metadata info() {
         return info;
     }
+
+
+    private static <T extends PlayerBase> ArrayList<T> getAllType(Map<String, T> elements) {
+        ArrayList<T> list = new ArrayList<T>();
+        for(T i : elements.values()) {
+            list.add(i);
+        }
+        return list;
+    }
+
     public ArrayList<PlayerMode> getAllModes() {
-        return modeStats;
+        return getAllType(modeStats);
     }
     public ArrayList<PlayerMap> getAllMaps() {
-        return mapStats;
+        return getAllType(mapStats);
+
     }
     public ArrayList<PlayerAgent> getAllAgents() {
-        return agentStats;
+        return getAllType(agentStats);
     }
     public ArrayList<PlayerWeapon> getAllWeapons() {
-        return weaponStats;
+        return getAllType(weaponStats);
     }
 
-
-    private static <T extends PlayerBase> T getType(ArrayList<T> elements, String sub) {
-        for(T i : elements) {
-            if(i.info().getSubType().equals(sub)) {
-                return i;
-            }
-        }
-        return null;
-    }
 
     public PlayerMode getMode(String mode) {
-        return getType(modeStats, mode);
+        return modeStats.get(mode);
     }
     public PlayerMap getMap(String map) {
-        return getType(mapStats, map);
+        return mapStats.get(map);
     }
     public PlayerAgent getAgent(String agent) {
-        return getType(agentStats, agent);
+        return agentStats.get(agent);
     }
     public PlayerWeapon getWeapon(String weapon) {
-        return getType(weaponStats, weapon);
+        return weaponStats.get(weapon);
     }
 
     public boolean containsMode(String mode) {
-        return getType(modeStats, mode) != null;
+        return modeStats.containsKey(mode);
     }
     public boolean containsMap(String map) {
-        return getType(mapStats, map) != null;
+        return mapStats.containsKey(map);
     }
     public boolean containsAgent(String agent) {
-        return getType(agentStats, agent) != null;
+        return agentStats.containsKey(agent);
     }
     public boolean containsWeapon(String weapon) {
-        return getType(weaponStats, weapon) != null;
+        return weaponStats.containsKey(weapon);
     }
 
-
     private static <T extends PlayerBase> ArrayList<T> getByHighestStat
-    (ArrayList<T> elements, String statMethod, boolean byLowest) {
+    (Map<String, T> stats, String statMethod, boolean byLowest) {
         Method statGetter = null;
+        ArrayList<T> elements = new ArrayList<T>();
+        for(T i : stats.values()) {
+            elements.add(i);
+        }
+        
         try {
             statGetter = elements.get(0).getClass().getMethod(statMethod);
         }

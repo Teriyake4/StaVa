@@ -106,7 +106,8 @@ public class PlayerParser {
                 String rankData = jsonData
                     .get(key).getAsJsonObject()
                     .get("metadata").getAsJsonObject()
-                    .get("tierName").getAsString();
+                    .get("tierName").getAsString()
+                    .toLowerCase();
                 compressed.addProperty(key, rankData);
             }
             else {
@@ -304,25 +305,25 @@ public class PlayerParser {
         metadata.addProperty("type", "player");
         Metadata info = gson.fromJson(metadata, Metadata.class);
 
-        ArrayList<PlayerMode> modeStats = new ArrayList<PlayerMode>();
-        ArrayList<PlayerMap> mapStats = new ArrayList<PlayerMap>();
-        ArrayList<PlayerAgent> agentStats = new ArrayList<PlayerAgent>();
-        ArrayList<PlayerWeapon> weaponStats = new ArrayList<PlayerWeapon>();
+        Map<String, PlayerMode> modeStats = new HashMap<String, PlayerMode>();
+        Map<String, PlayerMap> mapStats = new HashMap<String, PlayerMap>();
+        Map<String, PlayerAgent> agentStats = new HashMap<String, PlayerAgent>();
+        Map<String, PlayerWeapon> weaponStats = new HashMap<String, PlayerWeapon>();
         Map<String, ArrayList<String>> segments = getTypes(jsonString);
         for(Map.Entry<String, ArrayList<String>> types : segments.entrySet()) {
             for(String sub : types.getValue()) { // iterate over array with subtypes
                 switch(types.getKey()) {
                     case "season":
-                        modeStats.add(getPlayerMode(jsonString, sub));
+                        modeStats.put(sub, getPlayerMode(jsonString, sub));
                         break;
                     case "map":
-                        mapStats.add(getPlayerMap(jsonString, sub));
+                        mapStats.put(sub, getPlayerMap(jsonString, sub));
                         break;
                     case "agent":
-                        agentStats.add(getPlayerAgent(jsonString, sub));
+                        agentStats.put(sub, getPlayerAgent(jsonString, sub));
                         break;
                     case "weapon":
-                        weaponStats.add(getPlayerWeapon(jsonString, sub));
+                        weaponStats.put(sub, getPlayerWeapon(jsonString, sub));
                         break;
                 }
             }
@@ -393,6 +394,16 @@ public class PlayerParser {
         jsonPlayer = getSubType(jsonPlayer, "weapon", weapon);
         Gson gson = new Gson();
         PlayerWeapon finalData = gson.fromJson(jsonPlayer, PlayerWeapon.class);
+        return finalData;
+    }
+    /**
+     * Converts already parsed json Player to Player object. 
+     * @param jsonString to convert to Player Object
+     * @return Player Object
+     */
+    public static Player parsedJsonToPlayer(String jsonString) {
+        Gson gson = new Gson();
+        Player finalData = gson.fromJson(jsonString, Player.class);
         return finalData;
     }
 
