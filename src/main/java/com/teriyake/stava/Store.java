@@ -17,8 +17,8 @@ public class Store {
      * @param path of where to store data as a File object. 
      */
     public Store(File path) {
-        filePath = new File(path, "StaVa/data");
-        pattern = null;
+        filePath = new File(path, "/StaVa/data");
+        pattern = "";
         idAsFileName = true;
     }
     /**
@@ -26,8 +26,8 @@ public class Store {
      * @param path of where to store data as a String. 
      */
     public Store(String path) {
-        filePath = new File(path + "StaVa/data");
-        pattern = null;
+        filePath = new File(path + "/StaVa/data");
+        pattern = "";
         idAsFileName = true;
     }
     /**
@@ -35,7 +35,8 @@ public class Store {
      */
     public Store() {
         String path = System.getProperty("user.home");
-        filePath = new File(path + "StaVa/data");
+        filePath = new File(path + "/StaVa/data");
+        pattern = "";
         idAsFileName = true;
     }
     /**
@@ -86,11 +87,7 @@ public class Store {
      */
     private void storePlayerData(Metadata info, String toWrite) {
         File storeTo = getFilePath(info);
-        String fileName = "";
-        if(idAsFileName)
-            fileName = info.getUserID() + ".json";
-        else
-            fileName = info.getName() + ".json";
+        String fileName = "player.json";
 
         if(!storeTo.exists()) { // create folder
             storeTo.mkdirs();
@@ -121,6 +118,8 @@ public class Store {
     private File getFilePath(Metadata info) {
         String path = "player/";
         switch(pattern) {
+            case "": // no patterm
+                break;
             case "A": // by act
                 path += info.getSeason();
                 break;
@@ -131,6 +130,12 @@ public class Store {
                 path += child;
                 break;
         }
+        path += "/";
+        if(idAsFileName)
+            path += info.getUserID();
+        else
+            path += info.getName();
+        path += "/";
         File file = new File(filePath, path);
         return file;
     }
