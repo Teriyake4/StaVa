@@ -18,6 +18,10 @@ public class MatchTest {
         }
         System.out.println("Done Reading!");
         
-        MatchParser.getSegments(file);
+        // MatchParser.getSegments(file);
+
+        for(String i : MatchParser.getPlayers(file)) {
+            System.out.println(i);
+        }
     }
 }
