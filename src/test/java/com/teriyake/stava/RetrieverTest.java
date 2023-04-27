@@ -8,28 +8,29 @@ import com.teriyake.stava.stats.player.PlayerMode;
 
 public class RetrieverTest {
     public static void main(String[] args) {
-        String name = "EL TRUCKO#saucy";
+        String name = "dinoflask#6817";
 
         // String filePath = "C:/ProgramData/StaVa";
         // File file = new File(filePath);
+        Store store = new Store("C:/ProgramData");
         Retriever ret = null;
         Player p = null;
         String[] results = null;
         try {
             System.out.println("Creating connection");
-            ret = new Retriever();
+            ret = new Retriever(store);
             System.out.println("Connected");
-            results = ret.getSearch("el trucko");
+            // results = ret.getSearch("el trucko");
             p = ret.getPlayer(name);
             ret.closeConnection();
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-        System.out.println("Results: ");
-        for(String i : results){   
-            System.out.println(i);
-        }
+        // System.out.println("Results: ");
+        // for(String i : results){   
+        //     System.out.println(i);
+        // }
         System.out.println();
 
         PlayerMode pm = p.getMode("competitive");
