@@ -1,5 +1,6 @@
 package com.teriyake.stava;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import com.teriyake.stava.stats.Player;
@@ -8,11 +9,13 @@ import com.teriyake.stava.stats.player.PlayerMode;
 
 public class RetrieverTest {
     public static void main(String[] args) {
-        String name = "dinoflask#6817";
+        String name = "xVeg#NA1";
 
-        // String filePath = "C:/ProgramData/StaVa";
-        // File file = new File(filePath);
-        Store store = new Store("C:/ProgramData");
+        String filePath = "C:/ProgramData";
+        File file = new File(filePath);
+        Store store = new Store(System.getProperty("user.home") + "/OneDrive/Documents");
+        store.setStorePatternByAct();
+        store.setFileNameAsName();
         Retriever ret = null;
         Player p = null;
         String[] results = null;
