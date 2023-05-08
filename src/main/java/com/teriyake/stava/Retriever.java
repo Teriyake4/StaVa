@@ -183,6 +183,8 @@ public class Retriever {
         String recentMatch = connect.getRecentMatchesPage(name);
         String matchId = MatchParser.getMatchFromRecentMatchs(recentMatch);
         String match = connect.getMatchPage(matchId);
+        if(storage != null)
+            storage.store(match);
         players = MatchParser.getPlayers(match);
 
         return players;
