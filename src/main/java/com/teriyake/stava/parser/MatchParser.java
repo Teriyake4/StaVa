@@ -38,10 +38,11 @@ public class MatchParser {
 
     public static String getMatchFromRecentMatchs(String jsonString) {
         Gson gson = new Gson();
-        String matchId = gson.fromJson(jsonString, JsonObject.class)
+        JsonArray array = gson.fromJson(jsonString, JsonObject.class)
             .get("data").getAsJsonObject()
-            .get("matches").getAsJsonArray()
-            .get(0).getAsJsonObject()
+            .get("matches").getAsJsonArray();
+        int index = (int) (Math.random() * array.size());
+        String matchId = array.get(index).getAsJsonObject()
             .get("attributes").getAsJsonObject()
             .get("id").getAsString();
         return matchId;
