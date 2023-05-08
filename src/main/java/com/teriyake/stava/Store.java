@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.teriyake.stava.stats.Metadata;
 import com.teriyake.stava.stats.Player;
 import com.teriyake.stava.stats.player.PlayerBase;
@@ -12,6 +13,7 @@ public class Store {
     private File filePath; // C:/ProgramData/StaVa
     private String pattern; // ie A2, unit such as Acts and number
     private boolean idAsFileName;
+    private File lastStored;
     /**
      * Constructs a new Store instance with a filepath of where to store the data. 
      * @param path of where to store data as a File object. 
@@ -81,6 +83,13 @@ public class Store {
         return pattern;
     }
     /**
+     * Gives the file path of player last stored. 
+     * @return file path of player last stored. 
+     */
+    public File getFileOfLastStored() {
+        return lastStored;
+    }
+    /**
      * Stores retrieved data for player, given is metadata and data itself. 
      * @param info The metadata of the data to store. 
      * @param toWrite The data to store. 
@@ -103,6 +112,7 @@ public class Store {
             storeTo = new File(storeTo, fileName);
         }
         StavaUtil.writeFile(storeTo, toWrite, false);
+        lastStored = storeTo;
         // write to index
         // File index = new File(filePath, "index.txt");
         // toWrite = info.getName() + " = " + info.getUserID();
@@ -116,17 +126,20 @@ public class Store {
      * @return The path of where the data should be stored. 
      */
     private File getFilePath(Metadata info) {
-        String path = "player/";
+        String path = "/" + info.getType() + "/";
+        String child = "";
         switch(pattern) {
             case "": // no patterm
                 break;
             case "A": // by act
-                path += info.getSeason();
+                child = info.getSeason();
+                child = child.replaceAll(":", "-");
+                path += child;
                 break;
             case "E": // by episode
-                String child = info.getSeason();
+                child = info.getSeason();
                 int i = child.indexOf(":");
-                child = child.substring(i + 1);
+                child = child.substring(0, i);
                 path += child;
                 break;
         }
@@ -159,5 +172,36 @@ public class Store {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String toWrite = gson.toJson(player);
         storePlayerData(info, toWrite);
+    }
+
+    public void store(String match) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonObject info = gson.fromJson(match, JsonObject.class);
+        String path = "/match/";
+        path += info.get("data").getAsJsonObject()
+            .get("metadata").getAsJsonObject()
+            .get("seasonId").getAsString() + "/";
+        path += info.get("data").getAsJsonObject()
+            .get("attributes").getAsJsonObject()
+            .get("id").getAsString() + "/";
+        File storeTo = new File(filePath, path);
+
+
+        String fileName = "match.json";
+
+        if(!storeTo.exists()) { // create folder
+            storeTo.mkdirs();
+            storeTo = new File(storeTo, fileName); // create file
+            try {
+                storeTo.createNewFile();
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            storeTo = new File(storeTo, fileName);
+        }
+        StavaUtil.writeFile(storeTo, match, false);
     }
 }
