@@ -1,5 +1,7 @@
 package com.teriyake.stava.parser;
 
+import java.util.ArrayList;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -22,17 +24,20 @@ public class MatchParser {
         JsonArray initJson = gson.fromJson(jsonString, JsonObject.class)
             .get("data").getAsJsonObject()
             .get("segments").getAsJsonArray();
-        String[] players = new String[10];
-        int listIndex = 0;
+        ArrayList<String> toAdd = new ArrayList<String>();
         for(int i = 0; i < initJson.size(); i++) {
             JsonObject segment = initJson.get(i).getAsJsonObject();
             if(segment.get("type").getAsString().equals("player-summary")) {
-                players[listIndex] = segment.get("metadata").getAsJsonObject()
+                toAdd.add(
+                    segment.get("metadata").getAsJsonObject()
                     .get("platformInfo").getAsJsonObject()
-                    .get("platformUserIdentifier").getAsString();
-                listIndex++;
+                    .get("platformUserIdentifier").getAsString()
+                );
             }
         }
+        String[] players = new String[toAdd.size()];
+        for(int i = 0; i < players.length; i++)
+            players[i] = toAdd.get(i);
         return players;
     }
 
