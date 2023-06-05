@@ -11,9 +11,9 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.teriyake.stava.stats.Metadata;
 import com.teriyake.stava.stats.Player;
 import com.teriyake.stava.stats.player.PlayerAgent;
+import com.teriyake.stava.stats.player.PlayerData;
 import com.teriyake.stava.stats.player.PlayerMap;
 import com.teriyake.stava.stats.player.PlayerMode;
 import com.teriyake.stava.stats.player.PlayerWeapon;
@@ -303,7 +303,7 @@ public class PlayerParser {
         jsonPlayer = parse(jsonPlayer);
         JsonObject metadata = jsonPlayer.get("metadata").getAsJsonObject();
         metadata.addProperty("type", "player");
-        Metadata info = gson.fromJson(metadata, Metadata.class);
+        PlayerData info = gson.fromJson(metadata, PlayerData.class);
 
         Map<String, PlayerMode> modeStats = new HashMap<String, PlayerMode>();
         Map<String, PlayerMap> mapStats = new HashMap<String, PlayerMap>();
