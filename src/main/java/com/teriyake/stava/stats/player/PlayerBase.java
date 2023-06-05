@@ -1,9 +1,7 @@
 package com.teriyake.stava.stats.player;
 
-import com.teriyake.stava.stats.Metadata;
-
 public class PlayerBase {
-    private Metadata info;
+    private PlayerData info;
     private double matchesPlayed;
     private double matchesWon;
     private double matchesLost;
@@ -28,7 +26,7 @@ public class PlayerBase {
     private double dealtLegshots;
 
 
-    public Metadata info() {
+    public PlayerData info() {
         return info;
     }
     public double getMatchesPlayed() {

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.teriyake.stava.stats.player.PlayerAgent;
 import com.teriyake.stava.stats.player.PlayerBase;
+import com.teriyake.stava.stats.player.PlayerData;
 import com.teriyake.stava.stats.player.PlayerMap;
 import com.teriyake.stava.stats.player.PlayerMode;
 import com.teriyake.stava.stats.player.PlayerWeapon;
@@ -14,7 +15,7 @@ import com.teriyake.stava.stats.player.PlayerWeapon;
  * Represents a player and their game statistics.
  */
 public class Player {
-    private Metadata info;
+    private PlayerData info;
     private Map<String, PlayerMode> modeStats;
     private Map<String, PlayerMap> mapStats;
     private Map<String, PlayerAgent> agentStats;
@@ -29,7 +30,7 @@ public class Player {
      * @param metadata A Metadata object representing the player's metadata.
      */
     public Player(Map<String, PlayerMode> mode, Map<String, PlayerMap> map, 
-        Map<String, PlayerAgent> agent, Map<String, PlayerWeapon> weapon, Metadata metadata) {
+        Map<String, PlayerAgent> agent, Map<String, PlayerWeapon> weapon, PlayerData metadata) {
             modeStats = mode;
             mapStats = map;
             agentStats = agent;
@@ -41,7 +42,7 @@ public class Player {
      * Returns the Metadata object containing basic player information
      * @return The Metadata object representing the player's metadata.
      */
-    public Metadata info() {
+    public PlayerData info() {
         return info;
     }
 

@@ -5,9 +5,9 @@ import java.io.File;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.teriyake.stava.stats.Metadata;
 import com.teriyake.stava.stats.Player;
 import com.teriyake.stava.stats.player.PlayerBase;
+import com.teriyake.stava.stats.player.PlayerData;
 
 public class Store {
     private File filePath; // C:/ProgramData/StaVa
@@ -94,7 +94,7 @@ public class Store {
      * @param info The metadata of the data to store. 
      * @param toWrite The data to store. 
      */
-    private void storePlayerData(Metadata info, String toWrite) {
+    private void storePlayerData(PlayerData info, String toWrite) {
         File storeTo = getFilePath(info);
         String fileName = "player.json";
 
@@ -125,7 +125,7 @@ public class Store {
      * @param info The metadata of the data to store. 
      * @return The path of where the data should be stored. 
      */
-    private File getFilePath(Metadata info) {
+    private File getFilePath(PlayerData info) {
         String path = "/" + info.getType() + "/";
         String child = "";
         switch(pattern) {
@@ -158,7 +158,7 @@ public class Store {
      * @param player The data to store. 
      */
     public <T extends PlayerBase> void store(T player) {
-        Metadata info = player.info();
+        PlayerData info = player.info();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String toWrite = gson.toJson(player);
         storePlayerData(info, toWrite);
@@ -168,7 +168,7 @@ public class Store {
      * @param player The data to store. 
      */
     public void store(Player player) {
-        Metadata info = player.info();
+        PlayerData info = player.info();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String toWrite = gson.toJson(player);
         storePlayerData(info, toWrite);
