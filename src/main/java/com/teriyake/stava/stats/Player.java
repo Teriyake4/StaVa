@@ -98,12 +98,18 @@ public class Player {
 
     private static <T extends PlayerBase> ArrayList<T> getByHighestStat
     (Map<String, T> stats, String statMethod, boolean byLowest) {
+        // add "get" to method name if not included
+        if(!statMethod.substring(0, 3).equals("get")) {
+            statMethod = "get" + 
+                statMethod.substring(0, 1)
+                .toUpperCase() + 
+                statMethod.substring(1);
+        }
         Method statGetter = null;
         ArrayList<T> elements = new ArrayList<T>();
         for(T i : stats.values()) {
             elements.add(i);
-        }
-        
+        } 
         try {
             statGetter = elements.get(0).getClass().getMethod(statMethod);
         }
