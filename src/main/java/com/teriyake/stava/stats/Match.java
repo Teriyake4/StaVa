@@ -3,6 +3,7 @@ package com.teriyake.stava.stats;
 import java.util.ArrayList;
 
 import com.teriyake.stava.stats.match.MatchData;
+import com.teriyake.stava.stats.match.Round;
 import com.teriyake.stava.stats.match.TeamSumm;
 
 public class Match {
@@ -14,7 +15,7 @@ public class Match {
     // private ArrayList<DamageEvent> damageEvents; // 
     // private ArrayList<KillEvent> killEvents;
     // private ArrayList<PlayerRoundSummary> playerRoundSummaries;
-    private ArrayList<PlayerMatchSummary> playerMatchSummaries; // and player loadout?
+    // private ArrayList<PlayerMatchSummary> playerMatchSummaries; // and player loadout?
 
 
 }
