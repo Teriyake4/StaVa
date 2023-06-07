@@ -8,8 +8,8 @@ public class Round {
     private String winningTeam;
     private String losingTeam;
 
-    private ArrayList<DamageEvent> damageEvents;
-    private ArrayList<KillEvent> killEvents;
-    private ArrayList<PlayerRoundSummary> playerRoundSummaries;
+    // private ArrayList<DamageEvent> damageEvents;
+    // private ArrayList<KillEvent> killEvents;
+    // private ArrayList<PlayerRoundSummary> playerRoundSummaries;
     
 }
