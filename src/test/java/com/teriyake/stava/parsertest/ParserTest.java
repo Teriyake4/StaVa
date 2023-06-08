@@ -17,7 +17,7 @@ public class ParserTest {
     public static void main(String[] args) {
         System.out.println("Getting Player Data...");
         String file = "";
-        File filePath = new File(System.getProperty("user.dir") + "/stava/src/test/java/com/teriyake/stava/parsertest/Profile.json");
+        File filePath = new File(System.getProperty("user.dir") + "/src/test/java/com/teriyake/stava/parsertest/Profile.json");
         System.out.println(filePath);
         file = StavaUtil.readFile(filePath);
 
@@ -53,7 +53,7 @@ public class ParserTest {
 
 
         Gson gson = new GsonBuilder().setPrettyPrinting().setLenient().create();
-        System.out.println(gson.toJson(player));
+        // System.out.println(gson.toJson(player));
 
         // filePath = new File("C:/Users/Ian/OneDrive/Projects/Coding Projects/Java Projects/StaVa/stava/src/test/java/com/teriyake/stava/parsertest/ParserTest.json");
         // String toFile = gson.toJson(json);
