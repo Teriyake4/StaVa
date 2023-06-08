@@ -7,9 +7,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.teriyake.stava.stats.Player;
 import com.teriyake.stava.stats.player.PlayerAgent;
@@ -98,10 +100,10 @@ public class PlayerParser {
      * @return JsonObjects with nessecary stats and metadata
      */
     private static JsonObject statCompress(JsonObject jsonData) {
-        // System.out.println(jsonData);
         JsonObject compressed = new JsonObject();
         jsonData = jsonData.get("stats").getAsJsonObject();
-        for(String key : jsonData.keySet()) {
+        for(Map.Entry<String, JsonElement> entry : jsonData.entrySet()) {
+            String key = entry.getKey();
             if(key.equals("rank") || key.equals("peakRank")) {
                 String rankData = jsonData
                     .get(key).getAsJsonObject()
