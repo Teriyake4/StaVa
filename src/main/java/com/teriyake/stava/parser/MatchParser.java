@@ -7,9 +7,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class MatchParser {
+
+    public static String getMatchFromRecentMatchs(String jsonString) {
+        Gson gson = new Gson();
+        JsonArray array = gson.fromJson(jsonString, JsonObject.class)
+            .get("data").getAsJsonObject()
+            .get("matches").getAsJsonArray();
+        int index = (int) (Math.random() * array.size());
+        String matchId = array.get(index).getAsJsonObject()
+            .get("attributes").getAsJsonObject()
+            .get("id").getAsString();
+        return matchId;
+    }
     // temp
     public static void getSegments(String jsonString) {
-        Gson gson = new Gson(); // error when it gets 403?
+        Gson gson = new Gson();
         JsonArray initJson = gson.fromJson(jsonString, JsonObject.class)
             .get("data").getAsJsonObject()
             .get("segments").getAsJsonArray();
@@ -20,7 +32,7 @@ public class MatchParser {
     }
     // temp
     public static String[] getPlayers(String jsonString) {
-        Gson gson = new Gson(); // error when it gets 403?
+        Gson gson = new Gson();
         JsonArray initJson = gson.fromJson(jsonString, JsonObject.class)
             .get("data").getAsJsonObject()
             .get("segments").getAsJsonArray();
@@ -41,16 +53,13 @@ public class MatchParser {
         return players;
     }
 
-    public static String getMatchFromRecentMatchs(String jsonString) {
+    public static String getMap(String jsonString) {
         Gson gson = new Gson();
-        JsonArray array = gson.fromJson(jsonString, JsonObject.class)
+        String map = gson.fromJson(jsonString, JsonObject.class)
             .get("data").getAsJsonObject()
-            .get("matches").getAsJsonArray();
-        int index = (int) (Math.random() * array.size());
-        String matchId = array.get(index).getAsJsonObject()
-            .get("attributes").getAsJsonObject()
-            .get("id").getAsString();
-        return matchId;
+            .get("metadata").getAsJsonObject()
+            .get("mapName").getAsString();
+        return map;
     }
 
 }
