@@ -1,6 +1,8 @@
 package com.teriyake.stava.parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -60,6 +62,81 @@ public class MatchParser {
             .get("metadata").getAsJsonObject()
             .get("mapName").getAsString();
         return map;
+    }
+
+    public static String getWinningTeam(String jsonString) {
+        Gson gson = new Gson();
+        JsonArray initJson = gson.fromJson(jsonString, JsonObject.class)
+            .get("data").getAsJsonObject()
+            .get("segments").getAsJsonArray();
+        for(int i = 0; i < initJson.size(); i++) {
+            JsonObject segment = initJson.get(i).getAsJsonObject();
+            if(segment.get("type").getAsString().equals("team-summary")) {
+                String team = segment.get("metadata").getAsJsonObject()
+                    .get("name").getAsString();
+                boolean hasWon = segment.get("metadata").getAsJsonObject()
+                    .get("hasWon").getAsBoolean();
+                if(hasWon && team.equals("Red"))
+                    return "Attacker";
+                else if(hasWon && team.equals("Blue"))
+                    return "Defender";
+                else // too lazy to check other way
+                    continue;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @param jsonString
+     * @return
+     */
+    public static Map<String, ArrayList<String>> getTeams(String jsonString) {
+        Gson gson = new Gson();
+        JsonArray initJson = gson.fromJson(jsonString, JsonObject.class)
+            .get("data").getAsJsonObject()
+            .get("segments").getAsJsonArray();
+        ArrayList<String> defender = new ArrayList<String>();
+        ArrayList<String> attacker = new ArrayList<String>();
+        for(int i = 0; i < initJson.size(); i++) {
+            JsonObject segment = initJson.get(i).getAsJsonObject();
+            if(segment.get("type").getAsString().equals("player-summary")) {
+                String name = segment.get("metadata").getAsJsonObject()
+                    .get("platformInfo").getAsJsonObject()
+                    .get("platformUserIdentifier").getAsString();
+                String team = segment.get("metadata").getAsJsonObject()
+                    .get("teamId").getAsString();
+                if(team.equals("Blue"))
+                    defender.add(name);
+                else if(team.equals("Red"))
+                    attacker.add(name);
+            }
+        }
+        Map<String, ArrayList<String>> teams = new HashMap<String, ArrayList<String>>();
+        teams.put("defender", defender);
+        teams.put("attacker", attacker);
+        return teams;
+    }
+
+    public static String getAgentOfPlayer(String jsonString, String player) {
+        Gson gson = new Gson();
+        JsonArray initJson = gson.fromJson(jsonString, JsonObject.class)
+            .get("data").getAsJsonObject()
+            .get("segments").getAsJsonArray();
+        for(int i = 0; i < initJson.size(); i++) {
+            JsonObject segment = initJson.get(i).getAsJsonObject();
+            if(segment.get("type").getAsString().equals("player-summary")) {
+                String name = segment.get("metadata").getAsJsonObject()
+                    .get("platformInfo").getAsJsonObject()
+                    .get("platformUserIdentifier").getAsString();
+                if(name.equals(player)) {
+                    return segment.get("metadata").getAsJsonObject()
+                    .get("agentName").getAsString();
+                }
+            }
+        }
+        return null;
     }
 
 }

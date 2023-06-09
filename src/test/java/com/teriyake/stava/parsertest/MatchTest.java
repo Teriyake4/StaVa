@@ -1,6 +1,9 @@
 package com.teriyake.stava.parsertest;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.teriyake.stava.StavaUtil;
 import com.teriyake.stava.parser.MatchParser;
@@ -18,10 +21,27 @@ public class MatchTest {
         }
         System.out.println("Done Reading!");
         
-        MatchParser.getSegments(file);
+        // MatchParser.getSegments(file);
+        Map<String, ArrayList<String>> playerList = MatchParser.getTeams(file);
+        String[] defender = new String[5];
+        String[] attacker = new String[5];
+        for(String team : playerList.keySet()) {
+            for(int i = 0; i < 5; i++) {
+                if(team.equals("defender"))
+                    defender[i] = playerList.get(team).get(i);
+                else if(team.equals("attacker"))
+                    attacker[i] = playerList.get(team).get(i);
+            }
+        }
 
-        // for(String i : MatchParser.getPlayers(file)) {
-        //     System.out.println(i);
-        // }
+        System.out.println("Winning Team: " + MatchParser.getWinningTeam(file) + ", Map: " + MatchParser.getMap(file) + "\n");
+        System.out.println("Defender Team: ");
+        for(int i = 0; i < defender.length; i++) {
+            System.out.println(defender[i] + " - " + MatchParser.getAgentOfPlayer(file, defender[i]));
+        }
+        System.out.println("Attacker Team: ");
+        for(int i = 0; i < attacker.length; i++) {
+            System.out.println(attacker[i] + " - " + MatchParser.getAgentOfPlayer(file, attacker[i]));
+        }
     }
 }
