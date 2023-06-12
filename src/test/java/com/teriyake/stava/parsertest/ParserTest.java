@@ -9,7 +9,9 @@ import com.teriyake.stava.StavaUtil;
 import com.teriyake.stava.parser.PlayerParser;
 import com.teriyake.stava.stats.Player;
 import com.teriyake.stava.stats.player.PlayerAgent;
+import com.teriyake.stava.stats.player.PlayerAgentRole;
 import com.teriyake.stava.stats.player.PlayerMap;
+import com.teriyake.stava.stats.player.PlayerMapTopAgent;
 import com.teriyake.stava.stats.player.PlayerMode;
 import com.teriyake.stava.stats.player.PlayerWeapon;
 
@@ -34,6 +36,8 @@ public class ParserTest {
         PlayerMap map = null;
         PlayerAgent agent = null;
         PlayerWeapon weapon = null;
+        PlayerMapTopAgent mapTopAgent = null;
+        PlayerAgentRole agentRole = null;
         Player player = null;
             // mode = PlayerParser.getPlayerMode(file, "competitive");
             // map = PlayerParser.getPlayerMap(file, "lotus");
@@ -46,6 +50,8 @@ public class ParserTest {
         map = player.getMap("lotus");
         agent = player.getAgent("viper");
         weapon = player.getWeapon("vandal");
+        mapTopAgent = player.getMapTopAgent("fracture", "sage");
+        
 
         // System.out.println(PlayerParser.getTypes(file));
 
