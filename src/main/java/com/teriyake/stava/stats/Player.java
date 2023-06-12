@@ -82,7 +82,7 @@ public class Player {
         return getAllType(agentRoleStats);
     }
 
-    public ArrayList<PlayerMapTopAgent> getMapTopAgentsByMapOrAgent(String mapOrAgent) {
+    public ArrayList<PlayerMapTopAgent> getAllMapTopAgentsByMapOrAgent(String mapOrAgent) {
         ArrayList<PlayerMapTopAgent> list = new ArrayList<PlayerMapTopAgent>();
         for(String sub : mapTopAgentStats.keySet()) {
             if(sub.contains(mapOrAgent))
