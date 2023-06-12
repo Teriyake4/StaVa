@@ -76,8 +76,8 @@ public class MatchParser {
             .get("segments").getAsJsonArray();
         JsonObject team1 = initJson.get(0).getAsJsonObject(); // Red / Attacker
         JsonObject team2 = initJson.get(2).getAsJsonObject(); // Blue / Defender
-        String team = team1.get("metadata").getAsJsonObject()
-            .get("name").getAsString();
+        // String team = team1.get("metadata").getAsJsonObject()
+            // .get("name").getAsString();
         boolean winTeam1 = team1.get("metadata").getAsJsonObject()
             .get("hasWon").getAsBoolean();
         boolean winTeam2 = team2.get("metadata").getAsJsonObject()
