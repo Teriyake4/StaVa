@@ -3,8 +3,6 @@ package com.teriyake.stava.parsertest;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.teriyake.stava.StavaUtil;
 import com.teriyake.stava.parser.PlayerParser;
 import com.teriyake.stava.stats.Player;
@@ -51,6 +49,7 @@ public class ParserTest {
         agent = player.getAgent("viper");
         weapon = player.getWeapon("vandal");
         mapTopAgent = player.getMapTopAgent("fracture", "sage");
+        agentRole = player.getAgentRole("controller");
         
 
         // System.out.println(PlayerParser.getTypes(file));

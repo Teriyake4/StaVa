@@ -1,6 +1,5 @@
 package com.teriyake.stava;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import com.teriyake.stava.stats.Player;
@@ -11,14 +10,14 @@ public class RetrieverTest {
     public static void main(String[] args) {
         String name = "Onmakawa#KING";
 
-        String filePath = "C:/ProgramData";
-        File file = new File(filePath);
+        // String filePath = "C:/ProgramData";
+        // File file = new File(filePath);
         Store store = new Store(System.getProperty("user.home") + "/OneDrive/Documents");
         store.setStorePatternByAct();
         store.setFileNameAsName();
         Retriever ret = null;
         Player p = null;
-        String[] results = null;
+        // String[] results = null;
         try {
             System.out.println("Creating connection");
             ret = new Retriever(store);
