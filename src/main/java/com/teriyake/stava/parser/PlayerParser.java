@@ -337,10 +337,10 @@ public class PlayerParser {
                     case "weapon":
                         weaponStats.put(sub, getPlayerWeapon(jsonString, sub));
                         break;
-                    case "map-top-agent":
+                    case "mapTopAgent":
                         mapTopAgentStats.put(sub, getPlayerMapTopAgent(jsonString, sub));
                         break;
-                    case "agent-role":
+                    case "agentRole":
                         agentRoleStats.put(sub, getPlayerAgentRole(jsonString, sub));
                         break;
                 }
