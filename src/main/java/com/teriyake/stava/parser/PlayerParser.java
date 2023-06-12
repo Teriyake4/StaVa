@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -15,8 +14,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.teriyake.stava.stats.Player;
 import com.teriyake.stava.stats.player.PlayerAgent;
+import com.teriyake.stava.stats.player.PlayerAgentRole;
 import com.teriyake.stava.stats.player.PlayerData;
 import com.teriyake.stava.stats.player.PlayerMap;
+import com.teriyake.stava.stats.player.PlayerMapTopAgent;
 import com.teriyake.stava.stats.player.PlayerMode;
 import com.teriyake.stava.stats.player.PlayerWeapon;
 
@@ -29,38 +30,29 @@ public class PlayerParser {
      */
     private static JsonObject preParse(String jsonString) {
         Gson gson = new Gson(); // error when it gets 403?
-        JsonObject initJson = gson.fromJson(jsonString, JsonObject.class);
-        initJson = initJson.get("data").getAsJsonObject();
-        JsonArray segments = initJson
-            .get("segments").getAsJsonArray();
+        JsonObject initJson = gson.fromJson(jsonString, JsonObject.class)
+            .get("data").getAsJsonObject();
+        JsonArray segments = initJson.get("segments").getAsJsonArray();
+        JsonObject platformInfo = initJson.get("platformInfo").getAsJsonObject();
         JsonObject metadata = new JsonObject();
 
-        String data = initJson
-            .get("platformInfo").getAsJsonObject()
-            .get("platformUserHandle").getAsString();
+        String data = platformInfo.get("platformUserHandle").getAsString();
         metadata.addProperty("name", data);
 
-        data = initJson
-            .get("platformInfo").getAsJsonObject()
-            .get("platformUserId").getAsString();
+        data = platformInfo.get("platformUserId").getAsString();
         metadata.addProperty("userID", data);
 
-        data = initJson
-            .get("platformInfo").getAsJsonObject()
-            .get("avatarUrl").getAsString();
+        data = platformInfo.get("avatarUrl").getAsString();
         metadata.addProperty("avatarURL", data);
 
-        data = initJson
-            .get("metadata").getAsJsonObject()
+        data = initJson.get("metadata").getAsJsonObject()
             .get("activeShard").getAsString();
         metadata.addProperty("region", data);
 
-        data = initJson
-            .get("expiryDate").getAsString();
+        data = initJson.get("expiryDate").getAsString();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         OffsetDateTime date = OffsetDateTime.parse(data, formatter);
-        ZoneId pst = ZoneId.of("America/Los_Angeles");
-        ZonedDateTime dateTime = date.atZoneSameInstant(pst);
+        ZonedDateTime dateTime = date.atZoneSameInstant(ZoneId.of("America/Los_Angeles"));
         formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss z");
         data = dateTime.format(formatter);
         metadata.addProperty("date", data);
@@ -73,8 +65,7 @@ public class PlayerParser {
                     .get("metadata").getAsJsonObject()
                     .get("name").getAsString();
                 int index = data.indexOf(" ");
-                data = data.substring(index + 1);
-                data = data.replace(" ACT ", "");
+                data = data.substring(index + 1).replace(" ACT ", "");
                 index = data.indexOf(" ");
                 data = data.substring(0, index);
                 metadata.addProperty("season", data);
@@ -82,8 +73,7 @@ public class PlayerParser {
             }
         }
 
-        data = initJson
-            .get("metadata").getAsJsonObject()
+        data = initJson.get("metadata").getAsJsonObject()
             .get("defaultSeason").getAsString();
         metadata.addProperty("seasonID", data);
 
@@ -105,16 +95,14 @@ public class PlayerParser {
         for(Map.Entry<String, JsonElement> entry : jsonData.entrySet()) {
             String key = entry.getKey();
             if(key.equals("rank") || key.equals("peakRank")) {
-                String rankData = jsonData
-                    .get(key).getAsJsonObject()
+                String rankData = jsonData.get(key).getAsJsonObject()
                     .get("metadata").getAsJsonObject()
                     .get("tierName").getAsString()
                     .toLowerCase();
                 compressed.addProperty(key, rankData);
             }
             else {
-                double data = jsonData
-                    .get(key).getAsJsonObject()
+                double data = jsonData.get(key).getAsJsonObject()
                     .get("value").getAsDouble();
                 compressed.addProperty(key, data);
             }
@@ -136,14 +124,15 @@ public class PlayerParser {
         JsonObject map = new JsonObject();
         JsonObject agent = new JsonObject();
         JsonObject weapon = new JsonObject();
+        JsonObject mapTopAgent = new JsonObject();
+        JsonObject agentRole = new JsonObject();
 
         for(int i = 0; i < segments.size(); i++) {
             JsonObject segment = segments.get(i).getAsJsonObject();
             JsonObject data = new JsonObject();
             String type = segment.get("type").getAsString();
             String sub = getSub(segment);
-            String gameMode = segment
-                .get("attributes").getAsJsonObject()
+            String gameMode = segment.get("attributes").getAsJsonObject()
                 .get("playlist").getAsString();
             String url = "";
 
@@ -151,17 +140,15 @@ public class PlayerParser {
                 if(sub.equals("competitive")) {
                     // nested because it would go to else statement, 
                     // since dm doesn't have a pic and it would throw an error otherwise
-                    url = segment
-                        .get("stats").getAsJsonObject()
+                    url = segment.get("stats").getAsJsonObject()
                         .get("rank").getAsJsonObject()
                         .get("metadata").getAsJsonObject()
                         .get("iconUrl").getAsString();
                     data.addProperty("itemImageURL", url);
                 }
             }
-            else { // agent, map, weapon
-                url = segment
-                    .get("metadata").getAsJsonObject()
+            else { // agent, map, weapon, map-top-agent, agent-role
+                url = segment.get("metadata").getAsJsonObject()
                     .get("imageUrl").getAsString();
                 data.addProperty("itemImageURL", url);
             }
@@ -181,6 +168,12 @@ public class PlayerParser {
                 case "weapon":
                     weapon.add(sub, segment);
                     break;
+                case "map-top-agent":
+                    mapTopAgent.add(sub, segment);
+                    break;
+                case "agent-role":
+                    agentRole.add(sub, segment);
+                    break;
             }
         }
         parsedData.add("metadata", metadata);
@@ -188,6 +181,8 @@ public class PlayerParser {
         parsedData.add("map", map);
         parsedData.add("agent", agent);
         parsedData.add("weapon", weapon);
+        parsedData.add("map-top-agent", mapTopAgent);
+        parsedData.add("agent-role", agentRole);
 
         return parsedData;
     }
@@ -198,29 +193,31 @@ public class PlayerParser {
      * @return subtype String. Always lowercase
      */
     private static String getSub(JsonObject segment) {
+        JsonObject attribute = segment.get("attributes").getAsJsonObject();
         String type = segment
             .get("type").getAsString();
         String sub = "";
         switch(type) {
             case "season":
-                sub = segment
-                    .get("attributes").getAsJsonObject()
-                    .get("playlist").getAsString();
+                sub = attribute.get("playlist").getAsString();
                 break;
             case "map":
-                sub = segment
-                    .get("attributes").getAsJsonObject()
-                    .get("key").getAsString();
+                sub = attribute.get("key").getAsString();
                 break;
             case "agent":
-                sub = segment
-                    .get("metadata").getAsJsonObject()
+                sub = segment.get("metadata").getAsJsonObject()
                     .get("name").getAsString().toLowerCase();
                 break;
             case "weapon":
-                sub = segment
-                    .get("attributes").getAsJsonObject()
-                    .get("key").getAsString();
+                sub = attribute.get("key").getAsString();
+                break;
+            case "map-top-agent":
+                sub = attribute.get("mapKey").getAsString() + "-" + 
+                    attribute.get("agentKey").getAsString();
+                break;
+            case "agent-role":
+                sub = segment.get("metadata").getAsJsonObject()
+                    .get("name").getAsString().toLowerCase();
                 break;
         }
         return sub;
@@ -266,6 +263,9 @@ public class PlayerParser {
         ArrayList<String> agent = new ArrayList<String>();
         ArrayList<String> map = new ArrayList<String>();
         ArrayList<String> weapon = new ArrayList<String>();
+        ArrayList<String> mapTopAgent = new ArrayList<String>();
+        ArrayList<String> agentRole = new ArrayList<String>();
+
         for(int i = 0; i < jsonSegments.size(); i++) {
             JsonObject initData = jsonSegments.get(i).getAsJsonObject();
             String dataType = initData.get("type").getAsString();
@@ -284,12 +284,20 @@ public class PlayerParser {
                 case "weapon":
                     weapon.add(subType);
                     break;
+                case "map-top-agent":
+                    mapTopAgent.add(subType);
+                    break;
+                case "agent-role":
+                    agentRole.add(subType);
+                    break;
             }
         }
         output.put("season", season);
         output.put("agent", agent);
         output.put("map", map);
         output.put("weapon", weapon);
+        output.put("mapTopAgent", mapTopAgent);
+        output.put("agentRole", agentRole);
         return output;
     }
 
@@ -311,6 +319,8 @@ public class PlayerParser {
         Map<String, PlayerMap> mapStats = new HashMap<String, PlayerMap>();
         Map<String, PlayerAgent> agentStats = new HashMap<String, PlayerAgent>();
         Map<String, PlayerWeapon> weaponStats = new HashMap<String, PlayerWeapon>();
+        Map<String, PlayerMapTopAgent> mapTopAgentStats = new HashMap<String, PlayerMapTopAgent>();
+        Map<String, PlayerAgentRole> agentRoleStats = new HashMap<String, PlayerAgentRole>();
         Map<String, ArrayList<String>> segments = getTypes(jsonString);
         for(Map.Entry<String, ArrayList<String>> types : segments.entrySet()) {
             for(String sub : types.getValue()) { // iterate over array with subtypes
@@ -327,10 +337,17 @@ public class PlayerParser {
                     case "weapon":
                         weaponStats.put(sub, getPlayerWeapon(jsonString, sub));
                         break;
+                    case "map-top-agent":
+                        mapTopAgentStats.put(sub, getPlayerMapTopAgent(jsonString, sub));
+                        break;
+                    case "agent-role":
+                        agentRoleStats.put(sub, getPlayerAgentRole(jsonString, sub));
+                        break;
                 }
             }
         }
-        Player output = new Player(modeStats, mapStats, agentStats, weaponStats, info);
+        Player output = new Player(modeStats, mapStats, agentStats, weaponStats, 
+            mapTopAgentStats, agentRoleStats, info);
         return output;
     }
 
@@ -383,7 +400,7 @@ public class PlayerParser {
         return finalData;
     }
 
-     /**
+    /**
      * Parses the given json string to get specified stat as a PlayerWeapon object
      * @param jsonString playerdata to get stats from
      * @param mode stats to get from selected mode such as "phantom", or 
@@ -398,6 +415,39 @@ public class PlayerParser {
         PlayerWeapon finalData = gson.fromJson(jsonPlayer, PlayerWeapon.class);
         return finalData;
     }
+
+    /**
+     * Parses the given json string to get specified stat as a PlayerWeapon object
+     * @param jsonString playerdata to get stats from
+     * @param mode stats to get from selected mode such as "phantom", or 
+     * "classic"
+     * @return PlayerWeapon Object with stats of the specified weapon
+     */
+    public static PlayerMapTopAgent getPlayerMapTopAgent(String jsonString, String weapon) {
+        JsonObject jsonPlayer = preParse(jsonString);
+        jsonPlayer = parse(jsonPlayer);
+        jsonPlayer = getSubType(jsonPlayer, "map-top-agent", weapon);
+        Gson gson = new Gson();
+        PlayerMapTopAgent finalData = gson.fromJson(jsonPlayer, PlayerMapTopAgent.class);
+        return finalData;
+    }
+
+    /**
+     * Parses the given json string to get specified stat as a PlayerWeapon object
+     * @param jsonString playerdata to get stats from
+     * @param mode stats to get from selected mode such as "phantom", or 
+     * "classic"
+     * @return PlayerWeapon Object with stats of the specified weapon
+     */
+    public static PlayerAgentRole getPlayerAgentRole(String jsonString, String weapon) {
+        JsonObject jsonPlayer = preParse(jsonString);
+        jsonPlayer = parse(jsonPlayer);
+        jsonPlayer = getSubType(jsonPlayer, "agent-role", weapon);
+        Gson gson = new Gson();
+        PlayerAgentRole finalData = gson.fromJson(jsonPlayer, PlayerAgentRole.class);
+        return finalData;
+    }
+
     /**
      * Converts already parsed json Player to Player object. 
      * @param jsonString to convert to Player Object

@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import com.teriyake.stava.stats.player.PlayerAgent;
+import com.teriyake.stava.stats.player.PlayerAgentRole;
 import com.teriyake.stava.stats.player.PlayerBase;
 import com.teriyake.stava.stats.player.PlayerData;
 import com.teriyake.stava.stats.player.PlayerMap;
+import com.teriyake.stava.stats.player.PlayerMapTopAgent;
 import com.teriyake.stava.stats.player.PlayerMode;
 import com.teriyake.stava.stats.player.PlayerWeapon;
 
@@ -20,6 +22,8 @@ public class Player {
     private Map<String, PlayerMap> mapStats;
     private Map<String, PlayerAgent> agentStats;
     private Map<String, PlayerWeapon> weaponStats;
+    private Map<String, PlayerMapTopAgent> mapTopAgentStats;
+    private Map<String, PlayerAgentRole> agentRoleStats;
 
     /**
      * Constructs a new Player object with the given statistics and metadata.
@@ -30,11 +34,15 @@ public class Player {
      * @param metadata A Metadata object representing the player's metadata.
      */
     public Player(Map<String, PlayerMode> mode, Map<String, PlayerMap> map, 
-        Map<String, PlayerAgent> agent, Map<String, PlayerWeapon> weapon, PlayerData metadata) {
+        Map<String, PlayerAgent> agent, Map<String, PlayerWeapon> weapon, 
+        Map<String, PlayerMapTopAgent> mapTopAgent, Map<String, PlayerAgentRole> agentRole, 
+        PlayerData metadata) {
             modeStats = mode;
             mapStats = map;
             agentStats = agent;
             weaponStats = weapon;
+            mapTopAgentStats = mapTopAgent;
+            agentRoleStats = agentRole;
             info = metadata;
     }
 
@@ -60,13 +68,27 @@ public class Player {
     }
     public ArrayList<PlayerMap> getAllMaps() {
         return getAllType(mapStats);
-
     }
     public ArrayList<PlayerAgent> getAllAgents() {
         return getAllType(agentStats);
     }
     public ArrayList<PlayerWeapon> getAllWeapons() {
         return getAllType(weaponStats);
+    }
+    public ArrayList<PlayerMapTopAgent> getAllMapTopAgents() {
+        return getAllType(mapTopAgentStats);
+    }
+    public ArrayList<PlayerAgentRole> getAllAgentRoles() {
+        return getAllType(agentRoleStats);
+    }
+
+    public ArrayList<PlayerMapTopAgent> getMapTopAgentsByMapOrAgent(String mapOrAgent) {
+        ArrayList<PlayerMapTopAgent> list = new ArrayList<PlayerMapTopAgent>();
+        for(String sub : mapTopAgentStats.keySet()) {
+            if(sub.contains(mapOrAgent))
+                list.add(mapTopAgentStats.get(sub));
+        }
+        return list;
     }
 
 
@@ -82,6 +104,12 @@ public class Player {
     public PlayerWeapon getWeapon(String weapon) {
         return weaponStats.get(weapon);
     }
+    public PlayerMapTopAgent getMapTopAgent(String map, String agent) {
+        return mapTopAgentStats.get(map + "-" + agent);
+    }
+    public PlayerAgentRole getAgentRole(String role) {
+        return agentRoleStats.get(role);
+    }
 
     public boolean containsMode(String mode) {
         return modeStats.containsKey(mode);
@@ -94,6 +122,20 @@ public class Player {
     }
     public boolean containsWeapon(String weapon) {
         return weaponStats.containsKey(weapon);
+    }
+    public boolean containsMapTopAgent(String map, String agent) {
+        return mapTopAgentStats.containsKey(map + "-" + agent);
+    }
+    public boolean containsAgentRole(String agentRole) {
+        return agentRoleStats.containsKey(agentRole);
+    }
+
+    public boolean containsMapTopAgentByMapOrAgent(String mapOrAgent) {
+        for(String sub : mapTopAgentStats.keySet()) {
+            if(sub.contains(mapOrAgent))
+                return true;
+        }
+        return false;
     }
 
     private static <T extends PlayerBase> ArrayList<T> getByHighestStat
@@ -161,5 +203,11 @@ public class Player {
     }
     public ArrayList<PlayerWeapon> getWeaponByHighest(String statMethod, boolean byLowest) {
         return getByHighestStat(weaponStats, statMethod, byLowest);
+    }
+    public ArrayList<PlayerMapTopAgent> getMapTopAgentByHighest(String statMethod, boolean byLowest) {
+        return getByHighestStat(mapTopAgentStats, statMethod, byLowest);
+    }
+    public ArrayList<PlayerAgentRole> getAgentRoleByHighest(String statMethod, boolean byLowest) {
+        return getByHighestStat(agentRoleStats, statMethod, byLowest);
     }
 }
