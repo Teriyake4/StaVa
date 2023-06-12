@@ -58,7 +58,7 @@ public class ParserTest {
         // System.out.println(PlayerParser.getPlayer(file));
 
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().setLenient().create();
+        // Gson gson = new GsonBuilder().setPrettyPrinting().setLenient().create();
         // System.out.println(gson.toJson(player));
 
         // filePath = new File("C:/Users/Ian/OneDrive/Projects/Coding Projects/Java Projects/StaVa/stava/src/test/java/com/teriyake/stava/parsertest/ParserTest.json");
@@ -99,6 +99,18 @@ public class ParserTest {
         System.out.println("KD Ratio: " + weapon.getKDRatio());
         System.out.println("Longest Kill Distance: " + weapon.getLongestKillDistance());
 
+        System.out.println("\n" + mapTopAgent.info().getType());
+        System.out.println("Type: " + mapTopAgent.info().getSubType());
+        System.out.println("Damage per Round: " + mapTopAgent.getDamagePerRound());
+        System.out.println("Winrate: " + mapTopAgent.getMatchesWinPct());
+        System.out.println("KD Ratio: " + mapTopAgent.getKDRatio());
+
+        System.out.println("\n" + agentRole.info().getType());
+        System.out.println("Type: " + agentRole.info().getSubType());
+        System.out.println("Damage per Round: " + agentRole.getDamagePerRound());
+        System.out.println("Winrate: " + agentRole.getMatchesWinPct());
+        System.out.println("KD Ratio: " + agentRole.getKDRatio());
+
         ArrayList<PlayerAgent> agentList = player.getAgentByHighest("getMatchesWinPct", false);
         System.out.println("\n--------Stats by highest winrate--------");
         for(int i = 0; i < agentList.size(); i++) {
@@ -106,17 +118,11 @@ public class ParserTest {
             System.out.println("Winrate: " + agentList.get(i).getMatchesWinPct());
         }
 
-        ArrayList<PlayerMap> mapList = player.getMapByHighest("getMatchesWinPct", false);
-        for(int i = 0; i < mapList.size(); i++) {
-            System.out.println("\nType: " + mapList.get(i).info().getSubType());
-            System.out.println("Winrate: " + mapList.get(i).getMatchesWinPct());
-        }
-
-        ArrayList<PlayerWeapon> weaponList = player.getWeaponByHighest("getHeadshotsPercentage", false);
-        for(int i = 0; i < weaponList.size(); i++) {
-            System.out.println("\nType: " + weaponList.get(i).info().getSubType());
-            System.out.println("Winrate: " + weaponList.get(i).getMatchesWinPct());
-            System.out.println("Headshot: " + weaponList.get(i).getHeadshotsPercentage());
+        ArrayList<PlayerMapTopAgent> mapTopAgentList = player.getAllMapTopAgents();
+        System.out.println(mapTopAgentList.size());
+        for(int i = 0; i < mapTopAgentList.size(); i++) {
+            System.out.println("\nType: " + mapTopAgentList.get(i).info().getSubType());
+            System.out.println("Winrate: " + mapTopAgentList.get(i).getMatchesWinPct());
         }
 
 

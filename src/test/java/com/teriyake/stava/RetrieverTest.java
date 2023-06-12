@@ -9,7 +9,7 @@ import com.teriyake.stava.stats.player.PlayerMode;
 
 public class RetrieverTest {
     public static void main(String[] args) {
-        String name = "xVeg#NA1";
+        String name = "Onmakawa#KING";
 
         String filePath = "C:/ProgramData";
         File file = new File(filePath);
