@@ -64,26 +64,30 @@ public class MatchParser {
         return map;
     }
 
+    /**
+     * returns winning team of team from first half
+     * @param jsonString
+     * @return
+     */
     public static String getWinningTeam(String jsonString) {
         Gson gson = new Gson();
         JsonArray initJson = gson.fromJson(jsonString, JsonObject.class)
             .get("data").getAsJsonObject()
             .get("segments").getAsJsonArray();
-        for(int i = 0; i < initJson.size(); i++) {
-            JsonObject segment = initJson.get(i).getAsJsonObject();
-            if(segment.get("type").getAsString().equals("team-summary")) {
-                String team = segment.get("metadata").getAsJsonObject()
-                    .get("name").getAsString();
-                boolean hasWon = segment.get("metadata").getAsJsonObject()
-                    .get("hasWon").getAsBoolean();
-                if(hasWon && team.equals("Red"))
-                    return "Attacker";
-                else if(hasWon && team.equals("Blue"))
-                    return "Defender";
-                else // too lazy to check other way
-                    continue;
-            }
-        }
+        JsonObject team1 = initJson.get(0).getAsJsonObject(); // Red / Attacker
+        JsonObject team2 = initJson.get(2).getAsJsonObject(); // Blue / Defender
+        String team = team1.get("metadata").getAsJsonObject()
+            .get("name").getAsString();
+        boolean winTeam1 = team1.get("metadata").getAsJsonObject()
+            .get("hasWon").getAsBoolean();
+        boolean winTeam2 = team2.get("metadata").getAsJsonObject()
+            .get("hasWon").getAsBoolean();
+        if(winTeam1)
+            return "Attacker";
+        else if(winTeam2)
+            return "Defender";
+        else if(!winTeam1 && !winTeam2)
+            return "Tie";
         return null;
     }
 
