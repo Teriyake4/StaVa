@@ -162,4 +162,9 @@ public class ConnectPage {
 
     // list of recent matches with parameters
     // https://api.tracker.gg/api/v2/valorant/standard/matches/riot/xVeg%23NA1?type=competitive&season=34093c29-4306-43de-452f-3f944bde22be&agent=all&map=all
+
+    // loadout stats
+    // https://api.tracker.gg/api/v2/valorant/standard/profile/riot/SCY%20EL%20TRUCKO%23saucy/segments/loadout?playlist=competitive&seasonId=
+
+    // 
 }
