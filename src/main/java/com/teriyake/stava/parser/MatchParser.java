@@ -83,11 +83,11 @@ public class MatchParser {
         boolean winTeam2 = team2.get("metadata").getAsJsonObject()
             .get("hasWon").getAsBoolean();
         if(winTeam1)
-            return "Attacker";
+            return "attacker";
         else if(winTeam2)
-            return "Defender";
+            return "defender";
         else if(!winTeam1 && !winTeam2)
-            return "Tie";
+            return "tie";
         return null;
     }
 
