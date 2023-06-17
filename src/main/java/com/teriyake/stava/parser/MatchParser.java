@@ -16,7 +16,7 @@ public class MatchParser {
             .get("data").getAsJsonObject()
             .get("matches").getAsJsonArray();
         int index = (int) (Math.random() * array.size());
-        String matchId = array.get(index).getAsJsonObject()
+        String matchId = array.get(0).getAsJsonObject()
             .get("attributes").getAsJsonObject()
             .get("id").getAsString();
         return matchId;
@@ -62,6 +62,15 @@ public class MatchParser {
             .get("metadata").getAsJsonObject()
             .get("mapName").getAsString();
         return map;
+    }
+
+    public static String getMode(String jsonString) {
+        Gson gson = new Gson();
+        String mode = gson.fromJson(jsonString, JsonObject.class)
+            .get("data").getAsJsonObject()
+            .get("metadata").getAsJsonObject()
+            .get("queueId").getAsString();
+        return mode;
     }
 
     /**

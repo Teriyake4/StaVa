@@ -12,6 +12,7 @@ public class SeasonID {
     // }
     // // 5:3
     // public static String getSeasonRaw(String seasonId) {
+    // https://api.tracker.gg/api/v1/valorant/db/seasons/
         
     // }
 }
