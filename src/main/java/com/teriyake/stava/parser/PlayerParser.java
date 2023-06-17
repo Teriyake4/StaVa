@@ -42,7 +42,11 @@ public class PlayerParser {
         data = platformInfo.get("platformUserId").getAsString();
         metadata.addProperty("userID", data);
 
-        data = platformInfo.get("avatarUrl").getAsString();
+        JsonElement temp = platformInfo.get("avatarUrl");
+        if(temp.isJsonNull()) // rare case when avatar url is null. replaced with default avatar
+            data = "https://imgsvc.trackercdn.com/url/size(128),fit(cover)/https%3A%2F%2Ftrackercdn.com%2Fcdn%2Ftracker.gg%2Fvalorant%2Fimages%2Fdefault-avatar.png/image.jpg";
+        else
+            data = platformInfo.get("avatarUrl").getAsString();
         metadata.addProperty("avatarURL", data);
 
         data = initJson.get("metadata").getAsJsonObject()
