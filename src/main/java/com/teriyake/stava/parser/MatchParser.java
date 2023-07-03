@@ -16,7 +16,7 @@ public class MatchParser {
             .get("data").getAsJsonObject()
             .get("matches").getAsJsonArray();
         int index = (int) (Math.random() * array.size());
-        String matchId = array.get(0).getAsJsonObject()
+        String matchId = array.get(index).getAsJsonObject()
             .get("attributes").getAsJsonObject()
             .get("id").getAsString();
         return matchId;
