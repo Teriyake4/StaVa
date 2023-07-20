@@ -94,7 +94,7 @@ public class Store {
      * @param info The metadata of the data to store. 
      * @param toWrite The data to store. 
      */
-    private void storePlayerData(PlayerData info, String toWrite) {
+    private void storePlayerData(PlayerData info, String toWrite) throws NullPointerException {
         File storeTo = getFilePath(info);
         String fileName = "player.json";
 
@@ -125,7 +125,9 @@ public class Store {
      * @param info The metadata of the data to store. 
      * @return The path of where the data should be stored. 
      */
-    private File getFilePath(PlayerData info) {
+    private File getFilePath(PlayerData info) throws NullPointerException {
+        if(info.getType() == null || info.getSeason() == null)
+            throw new NullPointerException("Missing player data");
         String path = "/" + info.getType() + "/";
         String child = "";
         switch(pattern) {
@@ -143,6 +145,8 @@ public class Store {
                 path += child;
                 break;
         }
+        if(info.getUserID() == null || info.getName() == null)
+            throw new NullPointerException("Missing player data");
         path += "/";
         if(idAsFileName)
             path += info.getUserID();
@@ -157,21 +161,32 @@ public class Store {
      * @param <T> The player sub classes extending PlayerBase. 
      * @param player The data to store. 
      */
-    public <T extends PlayerBase> void store(T player) {
+    public <T extends PlayerBase> void store(T player) throws NullPointerException {
         PlayerData info = player.info();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String toWrite = gson.toJson(player);
         storePlayerData(info, toWrite);
     }
+
+    public <T extends PlayerBase> void store(T player, String toStore) throws NullPointerException {
+        PlayerData info = player.info();
+        storePlayerData(info, toStore);
+    }
+
     /**
      * Stores retrieved data of Player. 
      * @param player The data to store. 
      */
-    public void store(Player player) {
+    public void store(Player player) throws NullPointerException {
         PlayerData info = player.info();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String toWrite = gson.toJson(player);
         storePlayerData(info, toWrite);
+    }
+
+    public void store(Player player, String toStore) throws NullPointerException {
+        PlayerData info = player.info();
+        storePlayerData(info, toStore);
     }
 
     public void store(String match) {
