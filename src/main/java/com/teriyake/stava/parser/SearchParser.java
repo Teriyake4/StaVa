@@ -112,9 +112,9 @@ public class SearchParser {
                 init.put(name, numTime);
             }
         }
-        for(Map.Entry<String, Integer> result : init.entrySet()) {
+        // for(Map.Entry<String, Integer> result : init.entrySet()) {
 
-        }
+        // }
         String[] sorted = new String[init.size()];
         return sorted;
     }
