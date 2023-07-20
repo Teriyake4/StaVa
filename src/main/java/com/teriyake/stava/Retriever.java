@@ -110,7 +110,7 @@ public class Retriever {
         String playerData = connect.getProfilePage(name);
         Player player = PlayerParser.getPlayer(playerData);
         if(storage != null)
-            storage.store(player);
+            storage.store(player, playerData);
         return player;
     } 
     /**
@@ -125,7 +125,7 @@ public class Retriever {
         String playerData = connect.getProfilePage(name);
         PlayerMode player = PlayerParser.getPlayerMode(playerData, mode);
         if(storage != null)
-            storage.store(player);
+            storage.store(player, playerData);
         return player;
     }
     /**
@@ -140,7 +140,7 @@ public class Retriever {
         String playerData = connect.getProfilePage(name);
         PlayerMap player = PlayerParser.getPlayerMap(playerData, map);
         if(storage != null)
-            storage.store(player);
+            storage.store(player, playerData);
         return player;
     }
     /**
@@ -155,7 +155,7 @@ public class Retriever {
         String playerData = connect.getProfilePage(name);
         PlayerAgent player = PlayerParser.getPlayerAgent(playerData, agent);
         if(storage != null)
-            storage.store(player);
+            storage.store(player, playerData);
         return player;
     }
     /**
@@ -170,7 +170,7 @@ public class Retriever {
         String playerData = connect.getProfilePage(name);
         PlayerWeapon player = PlayerParser.getPlayerWeapon(playerData, weapon);
         if(storage != null)
-            storage.store(player);
+            storage.store(player, playerData);
         return player;
     }
     /**
@@ -186,7 +186,6 @@ public class Retriever {
         if(storage != null)
             storage.store(match);
         players = MatchParser.getPlayers(match);
-
         return players;
     }
 
