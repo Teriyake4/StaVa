@@ -42,6 +42,10 @@ public class RetrieverTest {
         System.out.println("Winrate: " + pm.getMatchesWinPct());
         System.out.println("KD Ratio: " + pm.getKDRatio());
         System.out.println("Image: " + pm.info().getItemImageURL());
+        System.out.println(pm.getFirstDeaths() + "," + pm.getMatchesPlayed());
+        System.out.println(pm.getKillsPerRound());
+        System.out.println(pm.getClutchesPercentage());
+        System.out.println(pm.getFirstBloodsPerMatch());
 
 
         ArrayList<PlayerAgent> plist = p.getAgentByHighest("getMatchesWinPct", false);
