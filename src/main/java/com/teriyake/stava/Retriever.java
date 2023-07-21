@@ -106,7 +106,7 @@ public class Retriever {
      * @return The specified player. 
      * @throws HttpStatusException
      */
-    public Player getPlayer(String name) throws HttpStatusException {
+    public Player getPlayer(String name) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
         Player player = PlayerParser.getPlayer(playerData);
         if(storage != null)
@@ -121,7 +121,7 @@ public class Retriever {
      * @return The stats of player for specified gamemode. 
      * @throws HttpStatusException
      */
-    public PlayerMode getPlayerMode(String name, String mode) throws HttpStatusException {
+    public PlayerMode getPlayerMode(String name, String mode) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
         PlayerMode player = PlayerParser.getPlayerMode(playerData, mode);
         if(storage != null)
@@ -136,7 +136,7 @@ public class Retriever {
      * @return The stats of player for specified map. 
      * @throws HttpStatusException
      */
-    public PlayerMap getPlayerMap(String name, String map) throws HttpStatusException {
+    public PlayerMap getPlayerMap(String name, String map) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
         PlayerMap player = PlayerParser.getPlayerMap(playerData, map);
         if(storage != null)
@@ -151,7 +151,7 @@ public class Retriever {
      * @return The stats of player for specified agent. 
      * @throws HttpStatusException
      */
-    public PlayerAgent getPlayerAgent(String name, String agent) throws HttpStatusException {
+    public PlayerAgent getPlayerAgent(String name, String agent) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
         PlayerAgent player = PlayerParser.getPlayerAgent(playerData, agent);
         if(storage != null)
@@ -166,7 +166,7 @@ public class Retriever {
      * @return The stats of player for specified weapon
      * @throws HttpStatusException
      */
-    public PlayerWeapon getPlayerWeapon(String name, String weapon) throws HttpStatusException {
+    public PlayerWeapon getPlayerWeapon(String name, String weapon) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
         PlayerWeapon player = PlayerParser.getPlayerWeapon(playerData, weapon);
         if(storage != null)
