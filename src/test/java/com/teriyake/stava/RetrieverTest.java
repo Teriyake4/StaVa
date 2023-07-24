@@ -8,7 +8,8 @@ import com.teriyake.stava.stats.player.PlayerMode;
 
 public class RetrieverTest {
     public static void main(String[] args) {
-        String name = "Onmakawa#KING";
+        // String name = "Onmakawa#KING";
+        String name = "SCY EL TRUCKO#saucy";
 
         // String filePath = "C:/ProgramData";
         // File file = new File(filePath);
