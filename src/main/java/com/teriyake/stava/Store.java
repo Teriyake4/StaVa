@@ -98,6 +98,9 @@ public class Store {
         File storeTo = getFilePath(info);
         String fileName = "player.json";
 
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        toWrite = gson.toJson(gson.fromJson(toWrite, Object.class));
+        
         if(!storeTo.exists()) { // create folder
             storeTo.mkdirs();
             storeTo = new File(storeTo, fileName); // create file
@@ -217,6 +220,7 @@ public class Store {
         else {
             storeTo = new File(storeTo, fileName);
         }
+        match = gson.toJson(gson.fromJson(match, Object.class));
         StavaUtil.writeFile(storeTo, match, false);
     }
 }
