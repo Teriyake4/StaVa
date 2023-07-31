@@ -111,23 +111,29 @@ public class Player {
         return agentRoleStats.get(role);
     }
 
+    private <T extends PlayerBase> boolean containsItem(Map<String, T> stats, String item) {
+        if(stats == null)
+            return false;
+        return stats.containsKey(item);
+    }
+
     public boolean containsMode(String mode) {
-        return modeStats.containsKey(mode);
+        return containsItem(modeStats, mode);
     }
     public boolean containsMap(String map) {
-        return mapStats.containsKey(map);
+        return containsItem(mapStats, map);
     }
     public boolean containsAgent(String agent) {
-        return agentStats.containsKey(agent);
+        return containsItem(agentStats, agent);
     }
     public boolean containsWeapon(String weapon) {
-        return weaponStats.containsKey(weapon);
+        return containsItem(weaponStats, weapon);
     }
     public boolean containsMapTopAgent(String map, String agent) {
-        return mapTopAgentStats.containsKey(map + "-" + agent);
+        return containsItem(mapTopAgentStats, map + "-" + agent);
     }
     public boolean containsAgentRole(String agentRole) {
-        return agentRoleStats.containsKey(agentRole);
+        return containsItem(agentRoleStats, agentRole);
     }
 
     public boolean containsMapTopAgentByMapOrAgent(String mapOrAgent) {
