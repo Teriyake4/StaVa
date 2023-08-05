@@ -17,7 +17,8 @@ public class ParserTest {
     public static void main(String[] args) {
         System.out.println("Getting Player Data...");
         String file = "";
-        File filePath = new File(System.getProperty("user.dir") + "/src/test/java/com/teriyake/stava/parsertest/Profile.json");
+        // File filePath = new File(System.getProperty("user.dir") + "/src/test/java/com/teriyake/stava/parsertest/Profile.json");
+        File filePath = new File("C:\\Users\\teriy\\OneDrive\\Documents\\StaVa\\data\\player\\7-1\\itstheBK3#3030\\player.json");
         System.out.println(filePath);
         file = StavaUtil.readFile(filePath);
 

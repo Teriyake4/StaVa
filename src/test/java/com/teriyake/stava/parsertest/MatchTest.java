@@ -11,7 +11,8 @@ public class MatchTest {
     public static void main(String[] args) {
         System.out.println("Getting Match Data...");
         String file = "";
-        File filePath = new File(System.getProperty("user.dir") + "/src/test/java/com/teriyake/stava/parsertest/Match.json");
+        // File filePath = new File(System.getProperty("user.dir") + "/src/test/java/com/teriyake/stava/parsertest/Match.json");
+        File filePath = new File("C:\\Users\\teriy\\OneDrive\\Documents\\StaVa\\data\\match\\34093c29-4306-43de-452f-3f944bde22be\\b546c355-22be-424d-8f08-e9aab7280864\\match.json");
         file = StavaUtil.readFile(filePath);
 
         if(file.equals("")) {
