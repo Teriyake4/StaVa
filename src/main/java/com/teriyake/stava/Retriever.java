@@ -178,9 +178,9 @@ public class Retriever {
      * @param name
      * @return
      */
-    public String[] getPlayersFromRecentMatch(String name) throws HttpStatusException {
+    public String[] getPlayersFromRecentMatch(String name, String gameMode) throws HttpStatusException {
         String[] players = new String[10];
-        String recentMatch = connect.getRecentMatchesPage(name);
+        String recentMatch = connect.getRecentMatchesPage(name, gameMode);
         String matchId = MatchParser.getMatchFromRecentMatchs(recentMatch);
         String match = connect.getMatchPage(matchId);
         if(storage != null)

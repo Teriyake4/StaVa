@@ -127,11 +127,13 @@ public class ConnectPage {
      * @return the competitive matches page as a string in JSON format
      * @throws HttpStatusException if an HTTP error occurs while loading the page, e.g. 403 or 404
      */
-    public String getRecentMatchesPage(String name) throws HttpStatusException {
+    public String getRecentMatchesPage(String name, String gamemode) throws HttpStatusException {
         String pageURL = "https://api.tracker.gg/api/v2/valorant/standard/matches/riot/";
         name = name.replaceAll(" ", "%20");
         name = name.replaceAll("#", "%23");
-        pageURL += name + "?type=competitive";
+        if(gamemode == null)
+            gamemode = "competitive";
+        pageURL += name + "?type=" + gamemode;
 
         String profileMatchesPage = loadPage(pageURL).text();
         return profileMatchesPage;
