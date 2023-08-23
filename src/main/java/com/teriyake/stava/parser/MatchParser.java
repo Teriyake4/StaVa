@@ -10,16 +10,18 @@ import com.google.gson.JsonObject;
 
 public class MatchParser {
 
-    public static String getMatchFromRecentMatchs(String jsonString) {
+    public static String[] getRecentMatchs(String jsonString) {
         Gson gson = new Gson();
         JsonArray array = gson.fromJson(jsonString, JsonObject.class)
             .get("data").getAsJsonObject()
             .get("matches").getAsJsonArray();
-        int index = (int) (Math.random() * array.size());
-        String matchId = array.get(index).getAsJsonObject()
+        String[] recentMatches = new String[array.size()];
+        for(int i = 0; i < array.size(); i++) {
+            recentMatches[i] = array.get(i).getAsJsonObject()
             .get("attributes").getAsJsonObject()
             .get("id").getAsString();
-        return matchId;
+        }
+        return recentMatches;
     }
     // temp
     public static void getSegments(String jsonString) {
