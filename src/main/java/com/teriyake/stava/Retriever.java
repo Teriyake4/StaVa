@@ -1,5 +1,7 @@
 package com.teriyake.stava;
 
+import java.util.List;
+
 import com.microsoft.playwright.PlaywrightException;
 import com.teriyake.stava.connection.ConnectPage;
 import com.teriyake.stava.parser.SearchParser;
@@ -83,10 +85,9 @@ public class Retriever {
      * @return The results of searched player. 
      * @throws HttpStatusException
      */
-    public String[] getSearch(String name) throws HttpStatusException {
+    public List<String> getSearch(String name) throws HttpStatusException {
         String jsonResults = connect.getSearchPage(name);
-        String[] results = SearchParser.getSearchResults(jsonResults);
-        return results;
+        return SearchParser.getSearchResults(jsonResults);
     }
     /**
      * Searches for specified player returning an array of results for non private accounts. 
@@ -94,10 +95,9 @@ public class Retriever {
      * @return The non private results of searched player. 
      * @throws HttpStatusException
      */
-    public String[] getNonPrivateSearch(String name) throws HttpStatusException {
+    public List<String> getNonPrivateSearch(String name) throws HttpStatusException {
         String jsonResults = connect.getSearchPage(name);
-        String[] results = SearchParser.getNonPrivateSearchResults(jsonResults);
-        return results;
+        return SearchParser.getNonPrivateSearchResults(jsonResults);
     }
     /**
      * Retrieves specified player and returns their stats. 

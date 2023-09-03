@@ -1,10 +1,12 @@
 package com.teriyake.stava;
 
+import java.util.List;
+
 public class SearchParserTest {
     public static void main(String[] args) {
         Retriever ret = null;
-        String[] fullResults = null;
-        String[] nonPrivateResults = null;
+        List<String> fullResults = null;
+        List<String> nonPrivateResults = null;
         String search = "el trucko";
         try {
             System.out.println("Creating connection");
@@ -19,13 +21,13 @@ public class SearchParserTest {
         }
 
         System.out.println("Full Results: \n");
-        for(int i = 0; i < fullResults.length; i++) {
-            System.out.println((i + 1) + ". " + fullResults[i]);
+        for(int i = 0; i < fullResults.size(); i++) {
+            System.out.println((i + 1) + ". " + fullResults.get(i));
         }
 
         System.out.println("\nNon Private Results: \n");
-        for(int i = 0; i < nonPrivateResults.length; i++) {
-            System.out.println((i + 1) + ". " + nonPrivateResults[i]);
+        for(int i = 0; i < nonPrivateResults.size(); i++) {
+            System.out.println((i + 1) + ". " + nonPrivateResults.get(i));
         }
     }    
 }

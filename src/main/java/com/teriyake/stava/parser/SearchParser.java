@@ -1,6 +1,8 @@
 package com.teriyake.stava.parser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -9,37 +11,28 @@ import com.google.gson.JsonObject;
 
 public class SearchParser {
 
-    public static String[] getSearchResults(String jsonString) {
+    public static List<String> getSearchResults(String jsonString) {
         Gson gson = new Gson(); // error when it gets 403?
         JsonObject initJson = gson.fromJson(jsonString, JsonObject.class);
         JsonArray results = initJson.get("data").getAsJsonArray();
-        String[] finalData = new String[results.size()];
+        List<String> finalData = new ArrayList<String>();
         for(int i = 0; i < results.size(); i++) {
-            finalData[i] = results.get(i).getAsJsonObject()
-                .get("platformUserIdentifier").getAsString();
+            finalData.add(results.get(i).getAsJsonObject()
+                .get("platformUserIdentifier").getAsString());
         }
         return finalData;
     }
 
-    public static String[] getNonPrivateSearchResults(String jsonString) {
+    public static List<String> getNonPrivateSearchResults(String jsonString) {
         Gson gson = new Gson();
         JsonObject initJson = gson.fromJson(jsonString, JsonObject.class);
         JsonArray results = initJson.get("data").getAsJsonArray();
-        int size = 0;
-        for(int i = 0; i < results.size(); i++) {
-            if(!results.get(i).getAsJsonObject().get("status").isJsonNull())
-                size++;
-        }
-        String[] finalData = new String[size];
-        if(size == 0)
-            return finalData;
-        int finalIndex = 0;
+        List<String> finalData = new ArrayList<String>();
         for(int i = 0; i < results.size(); i++) {
             if(results.get(i).getAsJsonObject().get("status").isJsonNull())
                 continue;
-            finalData[finalIndex] = results.get(i).getAsJsonObject()
-                .get("platformUserIdentifier").getAsString();
-            finalIndex++;
+            finalData.add(results.get(i).getAsJsonObject()
+                .get("platformUserIdentifier").getAsString());
         }
         return finalData;
     }
