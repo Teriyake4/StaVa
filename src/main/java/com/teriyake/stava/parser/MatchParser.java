@@ -154,4 +154,25 @@ public class MatchParser {
         return null;
     }
 
+    public static int getDefRoundsWon(String jsonString) {
+        Gson gson = new Gson();
+        int roundsWon = gson.fromJson(jsonString, JsonObject.class)
+            .get("data").getAsJsonObject()
+            .get("segments").getAsJsonArray()
+            .get(0).getAsJsonObject() // first in array is Red team (start def)
+            .get("stats").getAsJsonObject()
+            .get("roundsWon").getAsInt();
+        return roundsWon;
+    }
+
+    public static int getAttRoundsWon(String jsonString) {
+        Gson gson = new Gson();
+        int roundsWon = gson.fromJson(jsonString, JsonObject.class)
+            .get("data").getAsJsonObject()
+            .get("segments").getAsJsonArray()
+            .get(1).getAsJsonObject() // second in array is Blue team (start att)
+            .get("stats").getAsJsonObject()
+            .get("roundsWon").getAsInt();
+        return roundsWon;
+    }
 }
