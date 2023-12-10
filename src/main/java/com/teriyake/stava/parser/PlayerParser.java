@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.teriyake.stava.stats.Player;
 import com.teriyake.stava.stats.player.PlayerAgent;
 import com.teriyake.stava.stats.player.PlayerAgentRole;
@@ -22,62 +23,100 @@ import com.teriyake.stava.stats.player.PlayerMode;
 import com.teriyake.stava.stats.player.PlayerWeapon;
 
 public class PlayerParser {
+    private Gson gson;
+    private String jsonString;
+    private JsonObject parsed;
+    private JsonObject preParsed;
+    private Map<String, ArrayList<String>> types;
+    private boolean isParsed;
+
+    public PlayerParser(String jsonString) throws NullPointerException {
+        gson = new Gson();
+        if(jsonString == null)
+            throw new NullPointerException("jsonString can not be null");
+        this.jsonString = jsonString;
+        // long startTime = System.nanoTime();
+        this.parsed = null;
+        this.preParsed = null;
+        this.types = null;
+        // System.out.println("To Time: " + (System.nanoTime() - startTime) / 1000000 + "ms");
+    }
+
+    public PlayerParser() {
+        gson = new Gson();
+        this.jsonString = null;
+        this.parsed = null;
+        this.preParsed = null;
+        this.types = null;
+    }
+
+    public void setJsonString(String jsonString) throws NullPointerException {
+        if(jsonString == null)
+            throw new NullPointerException("jsonString can not be null");
+        this.jsonString = jsonString;
+    }
+
+    private void initParse() {
+        if(isParsed)
+            return;
+        this.preParsed = preParse();
+        this.types = null;
+        this.types = getTypes();
+        this.parsed = parse();
+    }
 
     /**
      * Orginizes the player data of the json string, and sets the metadata
      * @param jsonString
      * @return JsonObject with general metadata information
      */
-    private static JsonObject preParse(String jsonString) {
-        Gson gson = new Gson(); // error when it gets 403?
-        JsonObject initJson = gson.fromJson(jsonString, JsonObject.class)
+    private JsonObject preParse() {
+        // error when it gets 403?
+        JsonObject initJson = JsonParser.parseString(this.jsonString).getAsJsonObject()
+        // JsonObject initJson = gson.fromJson(this.jsonString, JsonObject.class)
             .get("data").getAsJsonObject();
-        JsonArray segments = initJson.get("segments").getAsJsonArray();
-        JsonObject platformInfo = initJson.get("platformInfo").getAsJsonObject();
+        JsonArray segments = initJson.getAsJsonArray("segments");
+        JsonObject platformInfo = initJson.getAsJsonObject("platformInfo");
         JsonObject metadata = new JsonObject();
 
-        String data = platformInfo.get("platformUserHandle").getAsString();
-        metadata.addProperty("name", data);
+        metadata.addProperty("name", platformInfo.getAsJsonPrimitive("platformUserHandle").getAsString());
 
-        data = platformInfo.get("platformUserId").getAsString();
-        metadata.addProperty("userID", data);
+        metadata.addProperty("userID", platformInfo.getAsJsonPrimitive("platformUserId").getAsString());
 
         JsonElement temp = platformInfo.get("avatarUrl");
+        String data = null;
         if(temp.isJsonNull()) // rare case when avatar url is null. replaced with default avatar
             data = "https://imgsvc.trackercdn.com/url/size(128),fit(cover)/https%3A%2F%2Ftrackercdn.com%2Fcdn%2Ftracker.gg%2Fvalorant%2Fimages%2Fdefault-avatar.png/image.jpg";
         else
-            data = platformInfo.get("avatarUrl").getAsString();
+            data = platformInfo.getAsJsonPrimitive("avatarUrl").getAsString();
         metadata.addProperty("avatarURL", data);
 
-        data = initJson.get("metadata").getAsJsonObject()
-            .get("activeShard").getAsString();
-        metadata.addProperty("region", data);
+        metadata.addProperty("region", initJson.getAsJsonObject("metadata")
+            .getAsJsonPrimitive("activeShard").getAsString());
 
-        data = initJson.get("expiryDate").getAsString();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        OffsetDateTime date = OffsetDateTime.parse(data, formatter);
+        OffsetDateTime date = OffsetDateTime.parse(initJson.getAsJsonPrimitive("expiryDate").getAsString(), formatter);
         ZonedDateTime dateTime = date.atZoneSameInstant(ZoneId.of("America/Los_Angeles"));
         formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss z");
-        data = dateTime.format(formatter);
-        metadata.addProperty("date", data);
+        metadata.addProperty("date", dateTime.format(formatter));
 
-        for(int i = 0; i < segments.size(); i++) {
-            String type = segments.get(i).getAsJsonObject()
-                .get("type").getAsString();
+        String type = null;
+        for (JsonElement segment : segments) {
+            JsonObject segmentObject = segment.getAsJsonObject();
+            type = segmentObject.getAsJsonPrimitive("type").getAsString();
             if(type.equals("season")) {
-                data = segments.get(i).getAsJsonObject()
-                    .get("metadata").getAsJsonObject()
-                    .get("name").getAsString();
-                int index = data.indexOf(" ");
-                data = data.substring(index + 1).replace(" ACT ", "");
-                index = data.indexOf(" ");
-                data = data.substring(0, index);
-                metadata.addProperty("season", data);
+                StringBuilder builder = new StringBuilder(segmentObject.getAsJsonObject("metadata")
+                    .getAsJsonPrimitive("name").getAsString());
+                int index = builder.indexOf(" ");
+                builder.append(builder.substring(index + 1).replace(" ACT ", ""));
+                index = builder.indexOf(" ");
+                builder.setLength(index);
+                metadata.addProperty("season", builder.toString());
                 break;
             }
         }
 
-        data = initJson.get("metadata").getAsJsonObject()
+        data = initJson.getAsJsonObject("metadata")
             .get("defaultSeason").getAsString();
         metadata.addProperty("seasonID", data);
 
@@ -93,7 +132,7 @@ public class PlayerParser {
      * @param jsonData
      * @return JsonObjects with nessecary stats and metadata
      */
-    private static JsonObject statCompress(JsonObject jsonData) {
+    private JsonObject statCompress(JsonObject jsonData) {
         JsonObject compressed = new JsonObject();
         jsonData = jsonData.get("stats").getAsJsonObject();
         for(Map.Entry<String, JsonElement> entry : jsonData.entrySet()) {
@@ -119,7 +158,8 @@ public class PlayerParser {
      * @param jsonData
      * @return JsonObject that is orginized
      */
-    private static JsonObject parse(JsonObject jsonData) {
+    private JsonObject parse() {
+        JsonObject jsonData = this.preParsed;
         JsonArray segments = jsonData.get("segments").getAsJsonArray();
         JsonObject metadata = jsonData.get("metadata").getAsJsonObject();
 
@@ -196,7 +236,7 @@ public class PlayerParser {
      * @param segment
      * @return subtype String. Always lowercase
      */
-    private static String getSub(JsonObject segment) {
+    private String getSub(JsonObject segment) {
         JsonObject attribute = segment.get("attributes").getAsJsonObject();
         String type = segment
             .get("type").getAsString();
@@ -234,7 +274,7 @@ public class PlayerParser {
      * @param sub subtype of data to get from the type. 
      * @return JsonObject of the specified subtype data from jsonPlayer
      */
-    private static JsonObject getSubType(JsonObject jsonPlayer, String type, String sub) {
+    private JsonObject getSubType(JsonObject jsonPlayer, String type, String sub) {
         jsonPlayer = jsonPlayer
             .get(type).getAsJsonObject()
             .get(sub).getAsJsonObject();
@@ -259,8 +299,13 @@ public class PlayerParser {
      * @return Map<String, ArrayList<String>> with key as the type and the value
      * containing an arraylist of the subtypes. 
      */
-    public static Map<String, ArrayList<String>> getTypes(String jsonString) {
-        JsonObject preJson = preParse(jsonString);
+    public Map<String, ArrayList<String>> getTypes() throws NullPointerException {
+        if(this.types != null)
+            return this.types;
+        if(this.jsonString == null)
+            throw new NullPointerException("Must set json string to parse using SetJsonString");
+        
+        JsonObject preJson = this.preParsed;
         JsonArray jsonSegments = preJson.get("segments").getAsJsonArray();
         Map<String, ArrayList<String>> output = new HashMap<String, ArrayList<String>>();
         ArrayList<String> season = new ArrayList<String>();
@@ -305,16 +350,49 @@ public class PlayerParser {
         return output;
     }
 
+    private void distributeStats(String key, String sub,
+        Map<String, PlayerMode> modeStats,
+        Map<String, PlayerMap> mapStats,
+        Map<String, PlayerAgent> agentStats,
+        Map<String, PlayerWeapon> weaponStats,
+        Map<String, PlayerMapTopAgent> mapTopAgentStats,
+        Map<String, PlayerAgentRole> agentRoleStats) {
+        switch(key) {
+            case "season":
+                modeStats.put(sub, getPlayerMode(sub));
+                break;
+            case "map":
+                mapStats.put(sub, getPlayerMap(sub));
+                break;
+            case "agent":
+                agentStats.put(sub, getPlayerAgent(sub));
+                break;
+            case "weapon":
+                weaponStats.put(sub, getPlayerWeapon(sub));
+                break;
+            case "mapTopAgent":
+                mapTopAgentStats.put(sub, getPlayerMapTopAgent(sub));
+                break;
+            case "agentRole":
+                agentRoleStats.put(sub, getPlayerAgentRole(sub));
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported type: " + key);
+        }
+    }
+
     /**
      * Parses and orginizes all the player data of the jsonString into a 
      * Player Object
      * @param jsonString to convert to Player Object
      * @return Player Object with all stats from the JsonObject
      */
-    public static Player getPlayer(String jsonString) {
-        Gson gson = new Gson();
-        JsonObject jsonPlayer = preParse(jsonString);
-        jsonPlayer = parse(jsonPlayer);
+    public Player getPlayer() throws NullPointerException {
+        // long startTime = System.nanoTime();
+        if(this.jsonString == null)
+            throw new NullPointerException("Must set json string to parse using SetJsonString");
+        initParse();
+        JsonObject jsonPlayer = this.parsed;
         JsonObject metadata = jsonPlayer.get("metadata").getAsJsonObject();
         metadata.addProperty("type", "player");
         PlayerData info = gson.fromJson(metadata, PlayerData.class);
@@ -325,33 +403,28 @@ public class PlayerParser {
         Map<String, PlayerWeapon> weaponStats = new HashMap<String, PlayerWeapon>();
         Map<String, PlayerMapTopAgent> mapTopAgentStats = new HashMap<String, PlayerMapTopAgent>();
         Map<String, PlayerAgentRole> agentRoleStats = new HashMap<String, PlayerAgentRole>();
-        Map<String, ArrayList<String>> segments = getTypes(jsonString);
+        Map<String, ArrayList<String>> segments = getTypes();
+
+        // segments.entrySet().parallelStream().forEach(types -> {
         for(Map.Entry<String, ArrayList<String>> types : segments.entrySet()) {
             for(String sub : types.getValue()) { // iterate over array with subtypes
-                switch(types.getKey()) {
-                    case "season":
-                        modeStats.put(sub, getPlayerMode(jsonString, sub));
-                        break;
-                    case "map":
-                        mapStats.put(sub, getPlayerMap(jsonString, sub));
-                        break;
-                    case "agent":
-                        agentStats.put(sub, getPlayerAgent(jsonString, sub));
-                        break;
-                    case "weapon":
-                        weaponStats.put(sub, getPlayerWeapon(jsonString, sub));
-                        break;
-                    case "mapTopAgent":
-                        mapTopAgentStats.put(sub, getPlayerMapTopAgent(jsonString, sub));
-                        break;
-                    case "agentRole":
-                        agentRoleStats.put(sub, getPlayerAgentRole(jsonString, sub));
-                        break;
-                }
+            // types.getValue().parallelStream().forEach(sub -> {
+                distributeStats(types.getKey(), sub,
+                    modeStats,
+                    mapStats,
+                    agentStats,
+                    weaponStats,
+                    mapTopAgentStats,
+                    agentRoleStats
+                );
             }
         }
+
+        // System.out.println("Get Time: " + (System.nanoTime() - startTime) / 1000000 + "ms");
+
         Player output = new Player(modeStats, mapStats, agentStats, weaponStats, 
             mapTopAgentStats, agentRoleStats, info);
+        
         return output;
     }
 
@@ -363,11 +436,11 @@ public class PlayerParser {
      * "deathmatch"
      * @return PlayerMode Object with stats of the specified gamemode
      */
-    public static PlayerMode getPlayerMode(String jsonString, String mode) {
-        JsonObject jsonPlayer = preParse(jsonString);
-        jsonPlayer = parse(jsonPlayer);
-        jsonPlayer = getSubType(jsonPlayer, "season", mode);
-        Gson gson = new Gson();
+    public PlayerMode getPlayerMode(String mode) throws NullPointerException {
+        if(this.jsonString == null)
+            throw new NullPointerException("Must set json string to parse using SetJsonString");
+        initParse();
+        JsonObject jsonPlayer = getSubType(this.parsed, "season", mode);
         PlayerMode finalData = gson.fromJson(jsonPlayer, PlayerMode.class);
         return finalData;
     }
@@ -379,11 +452,11 @@ public class PlayerParser {
      * "icebox"
      * @return PlayerMap Object with stats of the specified map
      */
-    public static PlayerMap getPlayerMap(String jsonString, String map) {
-        JsonObject jsonPlayer = preParse(jsonString);
-        jsonPlayer = parse(jsonPlayer);
-        jsonPlayer = getSubType(jsonPlayer, "map", map);
-        Gson gson = new Gson();
+    public PlayerMap getPlayerMap(String map) throws NullPointerException {
+        if(this.jsonString == null)
+            throw new NullPointerException("Must set json string to parse using SetJsonString");
+        initParse();
+        JsonObject jsonPlayer = getSubType(this.parsed, "map", map);
         PlayerMap finalData = gson.fromJson(jsonPlayer, PlayerMap.class);
         return finalData;
     }
@@ -395,11 +468,11 @@ public class PlayerParser {
      * "brimstone"
      * @return PlayerAgent Object with stats of the specified agent
      */
-    public static PlayerAgent getPlayerAgent(String jsonString, String agent) {
-        JsonObject jsonPlayer = preParse(jsonString);
-        jsonPlayer = parse(jsonPlayer);
-        jsonPlayer = getSubType(jsonPlayer, "agent", agent);
-        Gson gson = new Gson();
+    public PlayerAgent getPlayerAgent(String agent) throws NullPointerException {
+        if(this.jsonString == null)
+            throw new NullPointerException("Must set json string to parse using SetJsonString");
+        initParse();
+        JsonObject jsonPlayer = getSubType(this.parsed, "agent", agent);
         PlayerAgent finalData = gson.fromJson(jsonPlayer, PlayerAgent.class);
         return finalData;
     }
@@ -411,11 +484,11 @@ public class PlayerParser {
      * "classic"
      * @return PlayerWeapon Object with stats of the specified weapon
      */
-    public static PlayerWeapon getPlayerWeapon(String jsonString, String weapon) {
-        JsonObject jsonPlayer = preParse(jsonString);
-        jsonPlayer = parse(jsonPlayer);
-        jsonPlayer = getSubType(jsonPlayer, "weapon", weapon);
-        Gson gson = new Gson();
+    public PlayerWeapon getPlayerWeapon(String weapon) throws NullPointerException {
+        if(this.jsonString == null)
+            throw new NullPointerException("Must set json string to parse using SetJsonString");
+        initParse();
+        JsonObject jsonPlayer = getSubType(this.parsed, "weapon", weapon);
         PlayerWeapon finalData = gson.fromJson(jsonPlayer, PlayerWeapon.class);
         return finalData;
     }
@@ -427,11 +500,11 @@ public class PlayerParser {
      * "classic"
      * @return PlayerWeapon Object with stats of the specified weapon
      */
-    public static PlayerMapTopAgent getPlayerMapTopAgent(String jsonString, String weapon) {
-        JsonObject jsonPlayer = preParse(jsonString);
-        jsonPlayer = parse(jsonPlayer);
-        jsonPlayer = getSubType(jsonPlayer, "map-top-agent", weapon);
-        Gson gson = new Gson();
+    public PlayerMapTopAgent getPlayerMapTopAgent(String weapon) throws NullPointerException {
+        if(this.jsonString == null)
+            throw new NullPointerException("Must set json string to parse using SetJsonString");
+        initParse();
+        JsonObject jsonPlayer = getSubType(this.parsed, "map-top-agent", weapon);
         PlayerMapTopAgent finalData = gson.fromJson(jsonPlayer, PlayerMapTopAgent.class);
         return finalData;
     }
@@ -443,11 +516,11 @@ public class PlayerParser {
      * "classic"
      * @return PlayerWeapon Object with stats of the specified weapon
      */
-    public static PlayerAgentRole getPlayerAgentRole(String jsonString, String weapon) {
-        JsonObject jsonPlayer = preParse(jsonString);
-        jsonPlayer = parse(jsonPlayer);
-        jsonPlayer = getSubType(jsonPlayer, "agent-role", weapon);
-        Gson gson = new Gson();
+    public PlayerAgentRole getPlayerAgentRole(String weapon) throws NullPointerException {
+        if(this.jsonString == null)
+            throw new NullPointerException("Must set json string to parse using SetJsonString");
+        initParse();
+        JsonObject jsonPlayer = getSubType(this.parsed, "agent-role", weapon);
         PlayerAgentRole finalData = gson.fromJson(jsonPlayer, PlayerAgentRole.class);
         return finalData;
     }
@@ -457,11 +530,10 @@ public class PlayerParser {
      * @param jsonString to convert to Player Object
      * @return Player Object
      */
-    public static Player parsedJsonToPlayer(String jsonString) {
-        Gson gson = new Gson();
+    public Player parsedJsonToPlayer() throws NullPointerException {
+        if(this.jsonString == null)
+            throw new NullPointerException("Must set json string to parse using SetJsonString");
         Player finalData = gson.fromJson(jsonString, Player.class);
         return finalData;
     }
-
-    
  }
