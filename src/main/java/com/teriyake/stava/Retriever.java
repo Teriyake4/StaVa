@@ -19,6 +19,7 @@ import com.teriyake.stava.stats.player.PlayerWeapon;
 public class Retriever {
     private static ConnectPage connect;
     private Store storage;
+    private PlayerParser parser;
     /**
      * Constructs a new Retriever instance creating connection. 
      * @throws PlaywrightException if connection is unsuccessful. 
@@ -26,6 +27,7 @@ public class Retriever {
     public Retriever() {
         storage = null;
         connect();
+        parser = new PlayerParser();
     }
     /**
      * Constructs a new Retriever instance creating connection 
@@ -36,6 +38,7 @@ public class Retriever {
     public Retriever(Store store){
         storage = store;
         connect();
+        parser = new PlayerParser();
     }
     /**
      * Constructs a new Retriever instance with the given connection. 
@@ -44,6 +47,7 @@ public class Retriever {
     public Retriever(ConnectPage connection) {
         connect = connection;
         storage = null;
+        parser = new PlayerParser();
     }
     /**
      * Return 
@@ -108,7 +112,8 @@ public class Retriever {
      */
     public Player getPlayer(String name) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
-        Player player = PlayerParser.getPlayer(playerData);
+        parser.setJsonString(playerData);
+        Player player = parser.getPlayer();
         if(storage != null)
             storage.store(player, playerData);
         return player;
@@ -123,7 +128,8 @@ public class Retriever {
      */
     public PlayerMode getPlayerMode(String name, String mode) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
-        PlayerMode player = PlayerParser.getPlayerMode(playerData, mode);
+        parser.setJsonString(playerData);
+        PlayerMode player = parser.getPlayerMode(mode);
         if(storage != null)
             storage.store(player, playerData);
         return player;
@@ -138,7 +144,8 @@ public class Retriever {
      */
     public PlayerMap getPlayerMap(String name, String map) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
-        PlayerMap player = PlayerParser.getPlayerMap(playerData, map);
+        parser.setJsonString(playerData);
+        PlayerMap player = parser.getPlayerMap(map);
         if(storage != null)
             storage.store(player, playerData);
         return player;
@@ -153,7 +160,8 @@ public class Retriever {
      */
     public PlayerAgent getPlayerAgent(String name, String agent) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
-        PlayerAgent player = PlayerParser.getPlayerAgent(playerData, agent);
+        parser.setJsonString(playerData);
+        PlayerAgent player = parser.getPlayerAgent(agent);
         if(storage != null)
             storage.store(player, playerData);
         return player;
@@ -168,7 +176,8 @@ public class Retriever {
      */
     public PlayerWeapon getPlayerWeapon(String name, String weapon) throws HttpStatusException, NullPointerException {
         String playerData = connect.getProfilePage(name);
-        PlayerWeapon player = PlayerParser.getPlayerWeapon(playerData, weapon);
+        parser.setJsonString(playerData);
+        PlayerWeapon player = parser.getPlayerWeapon(weapon);
         if(storage != null)
             storage.store(player, playerData);
         return player;

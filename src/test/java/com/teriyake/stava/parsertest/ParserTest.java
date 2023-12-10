@@ -2,6 +2,9 @@ package com.teriyake.stava.parsertest;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
 import com.teriyake.stava.StavaUtil;
 import com.teriyake.stava.parser.PlayerParser;
@@ -18,7 +21,7 @@ public class ParserTest {
         System.out.println("Getting Player Data...");
         String file = "";
         // File filePath = new File(System.getProperty("user.dir") + "/src/test/java/com/teriyake/stava/parsertest/Profile.json");
-        File filePath = new File("C:\\Users\\Ian\\OneDrive\\Documents\\StaVa\\data\\player\\7-1\\Riokku#feet\\player.json");
+        File filePath = new File(System.getProperty("user.home") + "\\OneDrive\\Documents\\StaVa\\data\\player\\7-1\\Riokku#feet\\player.json");
         System.out.println(filePath);
         file = StavaUtil.readFile(filePath);
 
@@ -38,20 +41,35 @@ public class ParserTest {
         PlayerMapTopAgent mapTopAgent = null;
         PlayerAgentRole agentRole = null;
         Player player = null;
+            // PlayerParser parser = new PlayerParser(file);
             // mode = PlayerParser.getPlayerMode(file, "competitive");
             // map = PlayerParser.getPlayerMap(file, "lotus");
-            // agent = PlayerParser.getPlayerAgent(file, "viper");
+            // agent = parser.getPlayerAgent("omen");
             // weapon = PlayerParser.getPlayerWeapon(file, "vandal");
-        player = PlayerParser.getPlayer(file);
+        long[] timeList = new long[1];
+        for(int i = 0; i < timeList.length; i++) {
+            long startTime = System.nanoTime();
+            PlayerParser parser = new PlayerParser(file);
+            System.out.println("Insatitate Time: " + (System.nanoTime() - startTime) / 1000000 + "ms");
+            player = parser.getPlayer();
+            long endTime = System.nanoTime();
+            timeList[i] = endTime - startTime;
+        }
+        long time = 0;
+        for(int i = 0; i < timeList.length; i++)
+            time += timeList[i];
+        time /= timeList.length;
+        System.out.println("Average Parsing Time: " + (time) / 1000000 + "ms");
+        
         System.out.println("Done Parsing!");
 
-        mode = player.getMode("competitive");
-        map = player.getMap("lotus");
-        agent = player.getAgent("viper");
-        weapon = player.getWeapon("vandal");
-        mapTopAgent = player.getMapTopAgent("fracture", "sage");
-        agentRole = player.getAgentRole("controller");
-        
+        // mode = player.getMode("competitive");
+        // map = player.getMap("lotus");
+        // agent = player.getAgent("omen");
+        // weapon = player.getWeapon("vandal");
+        // mapTopAgent = player.getMapTopAgent("fracture", "sage");
+        // agentRole = player.getAgentRole("controller");
+
 
         // System.out.println(PlayerParser.getTypes(file));
 
@@ -68,62 +86,62 @@ public class ParserTest {
 
 
         
-        System.out.println("\nPlayer info of: " + player.info().getName());
-        System.out.println("Region: " + player.info().getRegion());
-        System.out.println("Episode, Act: " + player.info().getSeason());
-        System.out.println("Date: " + player.info().getDate());
+        // System.out.println("\nPlayer info of: " + player.info().getName());
+        // System.out.println("Region: " + player.info().getRegion());
+        // System.out.println("Episode, Act: " + player.info().getSeason());
+        // System.out.println("Date: " + player.info().getDate());
 
-        System.out.println("\n" + mode.info().getType());
-        System.out.println("Type: " + mode.info().getGameMode());
-        System.out.println("Rank: " + mode.getRank());
-        System.out.println("Winrate: " + mode.getMatchesWinPct());
-        System.out.println("KD Ratio: " + mode.getKDRatio());
+        // System.out.println("\n" + mode.info().getType());
+        // System.out.println("Type: " + mode.info().getGameMode());
+        // System.out.println("Rank: " + mode.getRank());
+        // System.out.println("Winrate: " + mode.getMatchesWinPct());
+        // System.out.println("KD Ratio: " + mode.getKDRatio());
 
-        System.out.println("\n" + map.info().getType());
-        System.out.println("Type: " + map.info().getSubType());
-        System.out.println("Damage per Round: " + map.getDamagePerRound());
-        System.out.println("Winrate: " + map.getMatchesWinPct());
-        System.out.println("KD Ratio: " + map.getKDRatio());
+        // System.out.println("\n" + map.info().getType());
+        // System.out.println("Type: " + map.info().getSubType());
+        // System.out.println("Damage per Round: " + map.getDamagePerRound());
+        // System.out.println("Winrate: " + map.getMatchesWinPct());
+        // System.out.println("KD Ratio: " + map.getKDRatio());
 
-        System.out.println("\n" + agent.info().getType());
-        System.out.println("Type: " + agent.info().getSubType());
-        System.out.println("Damage per Round: " + agent.getDamagePerRound());
-        System.out.println("Winrate: " + agent.getMatchesWinPct());
-        System.out.println("KD Ratio: " + agent.getKDRatio());
-        System.out.println("Ability kills: " + agent.getGrenadeKills());
+        // System.out.println("\n" + agent.info().getType());
+        // System.out.println("Type: " + agent.info().getSubType());
+        // System.out.println("Damage per Round: " + agent.getDamagePerRound());
+        // System.out.println("Winrate: " + agent.getMatchesWinPct());
+        // System.out.println("KD Ratio: " + agent.getKDRatio());
+        // System.out.println("Ability kills: " + agent.getGrenadeKills());
 
-        System.out.println("\n" + weapon.info().getType());
-        System.out.println("Type: " + weapon.info().getSubType());
-        System.out.println("Damage per Round: " + weapon.getDamagePerRound());
-        System.out.println("Winrate: " + weapon.getMatchesWinPct());
-        System.out.println("KD Ratio: " + weapon.getKDRatio());
-        System.out.println("Longest Kill Distance: " + weapon.getLongestKillDistance());
+        // System.out.println("\n" + weapon.info().getType());
+        // System.out.println("Type: " + weapon.info().getSubType());
+        // System.out.println("Damage per Round: " + weapon.getDamagePerRound());
+        // System.out.println("Winrate: " + weapon.getMatchesWinPct());
+        // System.out.println("KD Ratio: " + weapon.getKDRatio());
+        // System.out.println("Longest Kill Distance: " + weapon.getLongestKillDistance());
 
-        System.out.println("\n" + mapTopAgent.info().getType());
-        System.out.println("Type: " + mapTopAgent.info().getSubType());
-        System.out.println("Damage per Round: " + mapTopAgent.getDamagePerRound());
-        System.out.println("Winrate: " + mapTopAgent.getMatchesWinPct());
-        System.out.println("KD Ratio: " + mapTopAgent.getKDRatio());
+        // System.out.println("\n" + mapTopAgent.info().getType());
+        // System.out.println("Type: " + mapTopAgent.info().getSubType());
+        // System.out.println("Damage per Round: " + mapTopAgent.getDamagePerRound());
+        // System.out.println("Winrate: " + mapTopAgent.getMatchesWinPct());
+        // System.out.println("KD Ratio: " + mapTopAgent.getKDRatio());
 
-        System.out.println("\n" + agentRole.info().getType());
-        System.out.println("Type: " + agentRole.info().getSubType());
-        System.out.println("Damage per Round: " + agentRole.getDamagePerRound());
-        System.out.println("Winrate: " + agentRole.getMatchesWinPct());
-        System.out.println("KD Ratio: " + agentRole.getKDRatio());
+        // System.out.println("\n" + agentRole.info().getType());
+        // System.out.println("Type: " + agentRole.info().getSubType());
+        // System.out.println("Damage per Round: " + agentRole.getDamagePerRound());
+        // System.out.println("Winrate: " + agentRole.getMatchesWinPct());
+        // System.out.println("KD Ratio: " + agentRole.getKDRatio());
 
-        ArrayList<PlayerAgent> agentList = player.getAgentByHighest("getMatchesWinPct", false);
-        System.out.println("\n--------Stats by highest winrate--------");
-        for(int i = 0; i < agentList.size(); i++) {
-            System.out.println("\nType: " + agentList.get(i).info().getSubType());
-            System.out.println("Winrate: " + agentList.get(i).getMatchesWinPct());
-        }
+        // ArrayList<PlayerAgent> agentList = player.getAgentByHighest("getMatchesWinPct", false);
+        // System.out.println("\n--------Stats by highest winrate--------");
+        // for(int i = 0; i < agentList.size(); i++) {
+        //     System.out.println("\nType: " + agentList.get(i).info().getSubType());
+        //     System.out.println("Winrate: " + agentList.get(i).getMatchesWinPct());
+        // }
 
-        ArrayList<PlayerMapTopAgent> mapTopAgentList = player.getAllMapTopAgents();
-        System.out.println(mapTopAgentList.size());
-        for(int i = 0; i < mapTopAgentList.size(); i++) {
-            System.out.println("\nType: " + mapTopAgentList.get(i).info().getSubType());
-            System.out.println("Winrate: " + mapTopAgentList.get(i).getMatchesWinPct());
-        }
+        // ArrayList<PlayerMapTopAgent> mapTopAgentList = player.getAllMapTopAgents();
+        // System.out.println(mapTopAgentList.size());
+        // for(int i = 0; i < mapTopAgentList.size(); i++) {
+        //     System.out.println("\nType: " + mapTopAgentList.get(i).info().getSubType());
+        //     System.out.println("Winrate: " + mapTopAgentList.get(i).getMatchesWinPct());
+        // }
 
 
 
