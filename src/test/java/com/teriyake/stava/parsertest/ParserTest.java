@@ -48,10 +48,10 @@ public class ParserTest {
             // weapon = PlayerParser.getPlayerWeapon(file, "vandal");
         long[] timeList = new long[1];
         for(int i = 0; i < timeList.length; i++) {
-            long startTime = System.nanoTime();
             PlayerParser parser = new PlayerParser(file);
-            System.out.println("Insatitate Time: " + (System.nanoTime() - startTime) / 1000000 + "ms");
+            long startTime = System.nanoTime();
             player = parser.getPlayer();
+            System.out.println("Parse Time: " + (System.nanoTime() - startTime) / 1000000 + "ms");
             long endTime = System.nanoTime();
             timeList[i] = endTime - startTime;
         }
@@ -59,7 +59,7 @@ public class ParserTest {
         for(int i = 0; i < timeList.length; i++)
             time += timeList[i];
         time /= timeList.length;
-        System.out.println("Average Parsing Time: " + (time) / 1000000 + "ms");
+        System.out.println("Total Average Parsing Time: " + (time) / 1000000 + "ms");
         
         System.out.println("Done Parsing!");
 
