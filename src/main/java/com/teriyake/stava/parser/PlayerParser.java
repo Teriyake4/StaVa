@@ -35,11 +35,10 @@ public class PlayerParser {
         if(jsonString == null)
             throw new NullPointerException("jsonString can not be null");
         this.jsonString = jsonString;
-        // long startTime = System.nanoTime();
         this.parsed = null;
         this.preParsed = null;
         this.types = null;
-        // System.out.println("To Time: " + (System.nanoTime() - startTime) / 1000000 + "ms");
+        this.isParsed = false;
     }
 
     public PlayerParser() {
@@ -48,12 +47,14 @@ public class PlayerParser {
         this.parsed = null;
         this.preParsed = null;
         this.types = null;
+        this.isParsed = false;
     }
 
     public void setJsonString(String jsonString) throws NullPointerException {
         if(jsonString == null)
             throw new NullPointerException("jsonString can not be null");
         this.jsonString = jsonString;
+        this.isParsed = false;
     }
 
     private void initParse() {
@@ -63,6 +64,7 @@ public class PlayerParser {
         this.types = null;
         this.types = getTypes();
         this.parsed = parse();
+        this.isParsed = true;
     }
 
     /**
@@ -101,12 +103,15 @@ public class PlayerParser {
         metadata.addProperty("date", dateTime.format(formatter));
 
         String type = null;
-        for (JsonElement segment : segments) {
+        for(JsonElement segment : segments) {
             JsonObject segmentObject = segment.getAsJsonObject();
             type = segmentObject.getAsJsonPrimitive("type").getAsString();
             if(type.equals("season")) {
-                StringBuilder builder = new StringBuilder(segmentObject.getAsJsonObject("metadata")
-                    .getAsJsonPrimitive("name").getAsString());
+                segmentObject = segmentObject.getAsJsonObject("metadata");
+                String name = "shortName";
+                if(!segmentObject.has("shortName")) // new JSON players episode and act name's are under "shortName"
+                    name = "name";
+                StringBuilder builder = new StringBuilder(segmentObject.getAsJsonPrimitive(name).getAsString());
                 int index = builder.indexOf(" ");
                 builder.append(builder.substring(index + 1).replace(" ACT ", ""));
                 index = builder.indexOf(" ");
