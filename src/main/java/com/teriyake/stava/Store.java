@@ -204,7 +204,6 @@ public class Store {
             .get("id").getAsString() + "/";
         File storeTo = new File(filePath, path);
 
-
         String fileName = "match.json";
 
         if(!storeTo.exists()) { // create folder
