@@ -73,6 +73,8 @@ public class PlayerParser {
      * @return JsonObject with general metadata information
      */
     private JsonObject preParse() {
+        // long startTime = System.nanoTime();
+
         // error when it gets 403?
         JsonObject initJson = JsonParser.parseString(this.jsonString).getAsJsonObject()
         // JsonObject initJson = gson.fromJson(this.jsonString, JsonObject.class)
@@ -128,6 +130,7 @@ public class PlayerParser {
         JsonObject playerJson = new JsonObject();
         playerJson.add("metadata", metadata);
         playerJson.add("segments", segments);
+        // System.out.println("Parse Time: " + (System.nanoTime() - startTime) / 1000000 + "ms");
 
         return playerJson;
     }
@@ -180,6 +183,8 @@ public class PlayerParser {
             JsonObject segment = segments.get(i).getAsJsonObject();
             JsonObject data = new JsonObject();
             String type = segment.get("type").getAsString();
+            if(type.equals("peak-rating"))
+                continue;
             String sub = getSub(segment);
             String gameMode = segment.get("attributes").getAsJsonObject()
                 .get("playlist").getAsString();
