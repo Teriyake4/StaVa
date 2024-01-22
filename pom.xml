@@ -4,7 +4,7 @@
   <groupId>com.teriyake.stava</groupId>
   <artifactId>stava</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0</version>
+  <version>0.0.0</version>
   <name>StaVa</name>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>playwright</artifactId>
-      <version>1.40.0</version>
+      <version>1.41.0</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
     <dependency>
