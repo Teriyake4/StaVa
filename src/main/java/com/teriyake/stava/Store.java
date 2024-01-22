@@ -132,17 +132,15 @@ public class Store {
         if(info.getType() == null || info.getSeason() == null)
             throw new NullPointerException("Missing player data");
         String path = "/" + info.getType() + "/";
-        String child = "";
+        String child = info.getSeason();
         switch(pattern) {
             case "": // no patterm
                 break;
             case "A": // by act
-                child = info.getSeason();
                 child = child.replaceAll(":", "-");
                 path += child;
                 break;
             case "E": // by episode
-                child = info.getSeason();
                 int i = child.indexOf(":");
                 child = child.substring(0, i);
                 path += child;
