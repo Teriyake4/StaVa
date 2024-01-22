@@ -21,7 +21,7 @@ public class ParserTest {
         System.out.println("Getting Player Data...");
         String file = "";
         // File filePath = new File(System.getProperty("user.dir") + "/src/test/java/com/teriyake/stava/parsertest/Profile.json");
-        File filePath = new File(System.getProperty("user.home") + "\\OneDrive\\Documents\\StaVa\\data\\player\\7-1\\Riokku#feet\\player.json");
+        File filePath = new File(System.getProperty("user.home") + "\\OneDrive\\Documents\\StaVa\\data\\player\\jollibee#1614.json");
         System.out.println(filePath);
         file = StavaUtil.readFile(filePath);
 
@@ -51,7 +51,7 @@ public class ParserTest {
             PlayerParser parser = new PlayerParser(file);
             long startTime = System.nanoTime();
             player = parser.getPlayer();
-            System.out.println("Parse Time: " + (System.nanoTime() - startTime) / 1000000 + "ms");
+            // System.out.println("Parse Time: " + (System.nanoTime() - startTime) / 1000000 + "ms");
             long endTime = System.nanoTime();
             timeList[i] = endTime - startTime;
         }
