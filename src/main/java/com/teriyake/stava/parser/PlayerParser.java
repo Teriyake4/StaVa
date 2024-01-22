@@ -110,14 +110,15 @@ public class PlayerParser {
             type = segmentObject.getAsJsonPrimitive("type").getAsString();
             if(type.equals("season")) {
                 segmentObject = segmentObject.getAsJsonObject("metadata");
-                String name = "shortName";
-                if(!segmentObject.has("shortName")) // new JSON players episode and act name's are under "shortName"
-                    name = "name";
-                StringBuilder builder = new StringBuilder(segmentObject.getAsJsonPrimitive(name).getAsString());
-                int index = builder.indexOf(" ");
-                builder.append(builder.substring(index + 1).replace(" ACT ", ""));
-                index = builder.indexOf(" ");
-                builder.setLength(index);
+                String seasonInput = segmentObject.getAsJsonPrimitive("name").getAsString();
+                StringBuilder builder = new StringBuilder();
+                for(int i = 0; i < seasonInput.length(); i++) { // condenses season into value:value
+                    char c = seasonInput.charAt(i);
+                    if(Character.isDigit(c))
+                        builder.append(c);
+                    else if(c == ':')
+                        builder.append(':');
+                }
                 metadata.addProperty("season", builder.toString());
                 break;
             }
