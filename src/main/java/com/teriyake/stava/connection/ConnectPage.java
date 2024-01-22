@@ -167,6 +167,4 @@ public class ConnectPage {
 
     // loadout stats
     // https://api.tracker.gg/api/v2/valorant/standard/profile/riot/SCY%20EL%20TRUCKO%23saucy/segments/loadout?playlist=competitive&seasonId=
-
-    // 
 }
