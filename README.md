@@ -21,10 +21,10 @@ Player p = null;
 System.out.println("Retrieving player");
 try {
     Retriever ret = new Retriever();
-    p = ret.getPlayer(name); // More likely to throw an error
+    p = ret.getPlayer(name);
     ret.closeConnection();
 }
-catch(Exception e) {
+catch(Exception e) { // to catch either HttpStatusException or NullPointerException
     e.printStackTrace();
 }
 
