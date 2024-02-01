@@ -15,15 +15,12 @@ Getting the Player object and getting stats from it using the retriever. The nam
 ```java
 String name = "example#tag";
 // replace with a real player. 
-// make sure player profile is public on 
-// Tracker.gg and with this code specifically, 
-// should have one comp game
+// make sure player profile is public on Tracker.gg
 
 Player p = null;
+System.out.println("Retrieving player");
 try {
-    System.out.println("Creating connection");
-    Retriever ret = new Retriever(); // This can throw an error, but unlikely
-    System.out.println("Connected");
+    Retriever ret = new Retriever();
     p = ret.getPlayer(name); // More likely to throw an error
     ret.closeConnection();
 }
@@ -31,7 +28,7 @@ catch(Exception e) {
     e.printStackTrace();
 }
 
-PlayerMode pm = p.getMode("competitive");
+PlayerMode pm = p.getMode("competitive"); // Gets competitive gamemode stats
 
 System.out.println("Name: " + p.info().getName());
 System.out.println("Rank: " + pm.getRank());
